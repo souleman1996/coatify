@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cootify — Ceramic Coating & PPF Booking</title>
+  <meta name="description" content="Book ceramic coating or PPF fast, safe, and easy in the Oslo area."/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .active { border-color:#059669 !important; background:#f0fdf4 !important; }
+    .icon { width:18px; height:18px; }
+    button { -webkit-tap-highlight-color: transparent; }
+  </style>
+  <script src="script.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+  <!-- HEADER -->
+<header class="fixed top-0 w-full bg-white/70 backdrop-blur-md border-b border-gray-200 z-50">
+  <div class="w-full px-5 py-3 flex items-center justify-between">
+    
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <img src="img/coatifylogo.png" 
+           alt="Coatify logo" 
+           class="h-7 w-auto rounded-md shadow-sm"/>
+    </div>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-6 text-sm text-gray-700 font-normal">
+      <a href="#" class="hover:text-emerald-600 transition">Ceramic coating</a>
+      <a href="#" class="hover:text-emerald-600 transition">Paint protection film</a>
+      <a href="#" class="hover:text-emerald-600 transition">Warranty</a>
+      <a href="#" class="hover:text-emerald-600 transition">Support</a>
+    </nav>
+
+    <!-- Desktop Buttons -->
+    <div class="hidden md:flex items-center gap-3">
+      <button class="text-sm text-gray-600 hover:text-emerald-600 transition">Sign in</button>
+      <button class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 transition">
+        Become an Installer
+      </button>
+      <select class="px-2 py-1 text-xs rounded-md border border-gray-300 focus:ring-emerald-500">
+        <option>EN</option><option>NO</option><option>SE</option><option>DK</option>
+        <option>DE</option><option>FR</option><option>ES</option><option>NL</option>
+      </select>
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button id="menuBtn" class="md:hidden flex items-center text-gray-700 hover:text-emerald-600">
+      <!-- Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
+           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" 
+              d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200">
+    <nav class="flex flex-col px-5 py-4 space-y-3 text-sm text-gray-700">
+      <a href="#" class="hover:text-emerald-600 transition">Ceramic coating</a>
+      <a href="#" class="hover:text-emerald-600 transition">Paint protection film</a>
+      <a href="#" class="hover:text-emerald-600 transition">Warranty</a>
+      <a href="#" class="hover:text-emerald-600 transition">Support</a>
+      <hr class="my-2">
+      <button class="text-sm text-gray-600 hover:text-emerald-600 transition">Sign in</button>
+      <button class="w-full px-3 py-2 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 transition">
+        Become an Installer
+      </button>
+      <select class="w-full px-2 py-1 text-xs rounded-md border border-gray-300 focus:ring-emerald-500">
+        <option>EN</option><option>NO</option><option>SE</option><option>DK</option>
+        <option>DE</option><option>FR</option><option>ES</option><option>NL</option>
+      </select>
+    </nav>
+  </div>
+</header>
+
+
+<!-- HERO -->
+<section class="relative pt-20 pb-8 bg-gradient-to-br from-emerald-50 to-white">
+
+  <div class="relative max-w-2xl mx-auto px-4 text-center">
+    <!-- Heading -->
+    <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-2 text-gray-900">
+      Book <span class="text-emerald-600">Ceramic Coating</span> or <span class="text-emerald-600">PPF</span>
+    </h1>
+    <p class="text-gray-600 text-sm max-w-md mx-auto mb-6">
+      Compare trusted installers, pick a time, and send your request in minutes.
+    </p>
+
+    <!-- Booking Card -->
+    <form id="bookingForm" novalidate
+          class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 md:p-6 
+                 grid grid-cols-1 md:grid-cols-2 gap-4 text-left text-sm text-gray-800">
+
+      <!-- Service type -->
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium text-gray-700 mb-1">Service</label>
+        <input type="hidden" id="serviceType" name="service" value="Ceramic Coating"/>
+        <div class="inline-flex w-full rounded-lg overflow-hidden border border-gray-200" data-select-group="service">
+          <button type="button" data-value="Ceramic Coating" aria-pressed="true"
+                  class="select-btn flex-1 px-3 py-2 text-sm font-medium bg-emerald-600 text-white">
+            Ceramic Coating
+          </button>
+          <button type="button" data-value="Paint Protection Film" aria-pressed="false"
+                  class="select-btn flex-1 px-3 py-2 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50">
+            Paint Protection Film
+          </button>
+        </div>
+      </div>
+
+      <!-- City -->
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium text-gray-700 mb-1">City</label>
+        <select id="city" name="city"
+                class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 text-sm">
+          <option>Oslo</option>
+          <option>Bærum (Sandvika)</option>
+          <option>Lillestrøm</option>
+          <option>Asker</option>
+          <option>Drammen</option>
+          <option>Moss</option>
+          <option>Jessheim</option>
+          <option>Ski (Nordre Follo)</option>
+        </select>
+      </div>
+
+      <!-- Dropoff -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Dropoff</label>
+        <input id="dropoff" name="dropoff" type="datetime-local"
+               class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 text-sm"/>
+        <p class="text-[11px] text-gray-500 mt-1">* Min. 8h service time required</p>
+      </div>
+
+      <!-- Pickup -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Pickup</label>
+        <input id="pickup" name="pickup" type="datetime-local"
+               class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 text-sm"/>
+      </div>
+
+      <!-- Paint condition -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Paint condition</label>
+        <input type="hidden" id="conditionInput" name="condition" value="Perfect"/>
+        <div class="grid grid-cols-3 gap-2" data-select-group="condition">
+          <button type="button" data-value="Perfect"
+                  class="select-btn px-2 py-2 text-xs rounded-md bg-emerald-600 text-white">
+            Brand new
+          </button>
+          <button type="button" data-value="Some scratches"
+                  class="select-btn px-2 py-2 text-xs rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">
+            Some scratches
+          </button>
+          <button type="button" data-value="Needs attention"
+                  class="select-btn px-2 py-2 text-xs rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">
+            Needs attention
+          </button>
+        </div>
+      </div>
+
+      <!-- Vehicle type -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Vehicle type</label>
+        <input type="hidden" id="vehicleInput" name="vehicle" value="Sedan"/>
+        <div class="grid grid-cols-3 gap-2" data-select-group="vehicle">
+          <button type="button" data-value="Sedan" aria-pressed="true"
+                  class="select-btn px-2 py-2 text-xs rounded-md bg-emerald-600 text-white flex justify-center">
+            🚘 Sedan
+          </button>
+          <button type="button" data-value="SUV"
+                  class="select-btn px-2 py-2 text-xs rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 flex justify-center">
+            🚙 SUV
+          </button>
+          <button type="button" data-value="Coupe"
+                  class="select-btn px-2 py-2 text-xs rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 flex justify-center">
+            🏎️ Coupe
+          </button>
+        </div>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="md:col-span-2 flex justify-center mt-4">
+        <button id="submitBtn" type="submit"
+                class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 active:bg-emerald-800 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M16.65 10.5a6.15 6.15 0 11-12.3 0 6.15 6.15 0 0112.3 0z"/>
+          </svg>
+          Find Installers
+        </button>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll("[data-select-group]").forEach(group => {
+    const buttons = group.querySelectorAll(".select-btn");
+    const hiddenInput = group.parentElement.querySelector("input[type='hidden']");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        buttons.forEach(b => {
+          b.classList.remove("bg-emerald-600","text-white");
+          b.classList.add("bg-white","text-gray-700","border","border-gray-200");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.remove("bg-white","text-gray-700","border","border-gray-200");
+        btn.classList.add("bg-emerald-600","text-white");
+        btn.setAttribute("aria-pressed", "true");
+        hiddenInput.value = btn.dataset.value;
+      });
+    });
+  });
+</script>
+
+
+ <!-- TOP INSTALLERS IN XYZ -->
+
+
+<section id="installers" class="mt-20 max-w-7xl mx-auto px-5">
+  <h2 class="text-3xl font-semibold text-center text-gray-800 mb-10">
+    Sammenlign installatører nær deg
+  </h2>
+
+  <div id="installerGrid"
+       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  </div>
+</section>
+
+<script>
+  // Demo-data – med profesjonelle garanti-tekster
+  const installers = [
+    {
+      name: "Premium Auto Care",
+      city: "Oslo",
+      contact: "Anders Johansen",
+      profile: "https://i.pravatar.cc/100?img=15",
+      coating: {
+        brand: "Ceramic Pro",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/CeramicPro.svg/512px-CeramicPro.svg.png",
+        warranty: "5 års garanti",
+        price: "fra 8 990 kr",
+        yearly: "Årlig kontroll: 2 500 kr"
+      },
+      extras: [
+        "Inkludert full polering",
+        "Vinduscoating på alle ruter",
+        "Felgbeskyttelse tilgjengelig"
+      ],
+      lat: 59.9139, lng: 10.7522
+    },
+    {
+      name: "Elite Car Protection",
+      city: "Bærum",
+      contact: "Maria Berg",
+      profile: "https://i.pravatar.cc/100?img=12",
+      coating: {
+        brand: "DropOff",
+        logo: "https://dropoff.no/wp-content/uploads/2020/08/dropoff-logo.png",
+        warranty: "3 års garanti",
+        price: "fra 7 500 kr",
+        yearly: "Årlig kontroll: 3 000 kr"
+      },
+      extras: [
+        "Gratis lånebil",
+        "Inkludert innvendig vask",
+        "Vinduscoating tilgjengelig (+1 500 kr)"
+      ],
+      lat: 59.8949, lng: 10.5467
+    },
+    {
+      name: "Ditec Center",
+      city: "Drammen",
+      contact: "Erik Nilsen",
+      profile: "https://i.pravatar.cc/100?img=32",
+      coating: {
+        brand: "Ditec Original",
+        logo: "https://ditec.no/wp-content/uploads/2019/05/ditec-logo.png",
+        warranty: "6 års garanti",
+        price: "fra 9 900 kr",
+        yearly: "Årlig kontroll: 2 800 kr"
+      },
+      extras: [
+        "Coating på alle glassflater",
+        "Lakkbeskyttelse inkludert",
+        "Gratis lånebil"
+      ],
+      lat: 59.7439, lng: 10.2045
+    }
+  ];
+
+  // Haversine formel
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function renderInstallers(userLat, userLng) {
+    const sorted = installers.sort((a, b) => {
+      const distA = getDistance(userLat, userLng, a.lat, a.lng);
+      const distB = getDistance(userLat, userLng, b.lat, b.lng);
+      return distA - distB;
+    });
+
+    const grid = document.getElementById("installerGrid");
+    grid.innerHTML = "";
+
+    sorted.forEach(installer => {
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1 p-6 flex flex-col";
+
+      card.innerHTML = `
+        <!-- Header -->
+        <div class="flex items-center gap-4 mb-4">
+          <img src="${installer.profile}" alt="${installer.contact}" class="w-12 h-12 rounded-full object-cover border">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">${installer.name}</h3>
+            <p class="text-sm text-gray-500">${installer.contact} • ${installer.city}</p>
+          </div>
+        </div>
+
+        <!-- Coating info -->
+        <div class="flex items-center gap-3 mb-4">
+          <img src="${installer.coating.logo}" alt="${installer.coating.brand}" class="h-10 object-contain">
+          <div>
+            <p class="font-semibold text-gray-800">${installer.coating.brand}</p>
+            <p class="text-xs text-gray-500">${installer.coating.warranty}</p>
+          </div>
+        </div>
+
+        <!-- Pris & kontroll -->
+        <div>
+          <p class="text-2xl font-bold text-emerald-600">${installer.coating.price}</p>
+          <p class="text-sm text-gray-500 mb-4">${installer.coating.yearly}</p>
+        </div>
+
+        <!-- Ekstra tjenester -->
+        <ul class="space-y-2 text-sm text-gray-700">
+          ${installer.extras.map(e => `
+            <li class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                   class="h-4 w-4 text-emerald-600 flex-shrink-0" 
+                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M5 13l4 4L19 7" />
+              </svg>
+              ${e}
+            </li>`).join("")}
+        </ul>
+
+        <!-- CTA -->
+        <a href="#bookingForm"
+           class="mt-6 inline-block w-full text-center px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition">
+          Bestill nå
+        </a>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // Geolokasjon
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords;
+        renderInstallers(latitude, longitude);
+      },
+      () => renderInstallers(59.9139, 10.7522)
+    );
+  } else {
+    renderInstallers(59.9139, 10.7522);
+  }
+</script>
+
+
+
+<!-- BANNER -->
+<section class="relative mt-10 max-w-6xl mx-auto px-5">
+  <img src="file:///C:/Users/Lenovo/Documents/Coatify/img/coatify%20ceramic%20coating.jpeg"
+       class="w-full h-96 md:h-[28rem] object-cover rounded-xl shadow-md" loading="lazy"/>
+  
+  <!-- Overlay -->
+  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-black/50 to-transparent flex flex-col justify-center px-6">
+    <h2 class="text-white text-2xl md:text-4xl font-medium max-w-lg mb-6">
+      Discover the benefits of ceramic coating for your vehicle
+    </h2>
+
+    <!-- CTA Button -->
+    <a href="#bookingForm" 
+       class="inline-block w-fit px-6 py-3 rounded-lg bg-emerald-600 text-white text-sm md:text-base font-medium shadow-md hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 transition">
+       Lea&rn More
+    </a>
+  </div>
+</section>
+
+
+<!-- FOOOTER -->
+
+
+<footer class="bg-white border-t border-gray-200 mt-20">
+  <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+    
+    <!-- Logo / Kort intro -->
+    <div>
+      <img src="file:///C:/Users/Lenovo/Documents/Coatify/img/coatifylogo.png" 
+           alt="Coatify logo" 
+           class="h-10 mb-4">
+      <p class="text-sm text-gray-600 leading-relaxed">
+        Sammenlign de beste installatørene for lakkbeskyttelse. 
+        Finn de nærmest deg og bestill trygt gjennom Coatify.
+      </p>
+    </div>
+
+    <!-- Hurtiglenker -->
+    <div>
+      <h4 class="text-lg font-semibold text-gray-800 mb-4">Hurtiglenker</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#installers" class="hover:text-emerald-600 transition">Installatører</a></li>
+        <li><a href="#bookingForm" class="hover:text-emerald-600 transition">Bestill nå</a></li>
+        <li><a href="#priser" class="hover:text-emerald-600 transition">Priser</a></li>
+        <li><a href="#faq" class="hover:text-emerald-600 transition">FAQ</a></li>
+      </ul>
+    </div>
+
+    <!-- Kontakt -->
+    <div>
+      <h4 class="text-lg font-semibold text-gray-800 mb-4">Kontakt oss</h4>
+      <ul class="space-y-2 text-sm text-gray-600">
+        <li> Oslo, Norge</li>
+        <li>+47 22 22 22 22</li>
+        <li>✉️ support@coatify.no</li>
+      </ul>
+    </div>
+
+    <!-- Nyhetsbrev -->
+    <div>
+      <h4 class="text-lg font-semibold text-gray-800 mb-4">Hold deg oppdatert</h4>
+      <form class="flex flex-col sm:flex-row gap-3">
+        <input 
+          type="email" 
+          placeholder="Din e-post" 
+          class="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        >
+        <button 
+          type="submit" 
+          class="px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition"
+        >
+          Abonner
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Bunnlinje -->
+  <div class="border-t border-gray-200 mt-8">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
+      <p>&copy; 2025 Coatify. Alle rettigheter forbeholdt.</p>
+      <div class="flex gap-5 mt-4 md:mt-0">
+        <a href="#" class="hover:text-emerald-600 transition">Personvern</a>
+        <a href="#" class="hover:text-emerald-600 transition">Vilkår</a>
+      </div>
+    </div>
+  </div>
+</footer>
