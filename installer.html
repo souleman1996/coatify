@@ -1,0 +1,1417 @@
+<!doctype html>
+<html lang="no" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Coatify — Finn verifiserte installatører for keramisk coating</title>
+  <meta name="description" content="Sammenlign verifiserte installatører, åpne profilen for galleri, pakker og chat. Se tydelig hvilken coating-type som brukes og lær hvorfor den passer for deg." />
+  <meta name="theme-color" content="#006666" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#003f3f" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --brand:#006666; --brand-700:#0a5a5a; --ok:#16a34a; --ink:#0f172a; --ink-600:#475569; --line:#e5e7eb;
+      --ring:0 0 0 3px rgba(0,102,102,.25);
+      --logo-h: 64px;
+      --ic-from:#007378; --ic-to:#005e62; --ic-text:#eefdfd; --ic-sub:#c9efef; --ic-chip-bg:rgba(255,255,255,.12); --ic-chip-brd:rgba(255,255,255,.28);
+      --card-side-w: 132px; --chips-min-h: 48px; --avatar-size: 56px; --card-min-h: 220px;
+      --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
+    }
+    *{ box-sizing:border-box } html,body{ height:100% } html{-webkit-text-size-adjust:100%}
+    body{ background:#fff; color:var(--ink); -webkit-tap-highlight-color: transparent; }
+    .skip{ position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden }
+    .skip:focus{ left:1rem; top:1rem; width:auto; height:auto; background:#fff; color:#111827; padding:.5rem .75rem; border-radius:.5rem; box-shadow:0 8px 24px rgba(2,6,23,.15); z-index:50 }
+    .icon{width:20px;height:20px}
+    .chip{border:1px solid rgba(15,23,42,.18);background:rgba(2,6,23,.04)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-weight:800;border-radius:1rem;line-height:1;min-height:44px;min-width:44px}
+    .btn:focus-visible{ outline:none; box-shadow:var(--ring) }
+    .btn-primary{background:var(--brand);color:#fff;padding:.8rem 1.05rem}
+    .btn-primary:hover{ background:var(--brand-700) }
+    .btn-outline{border:1px solid #cbd5e1;color:#0f172a;padding:.75rem 1rem;background:#fff}
+    .btn-outline:hover{ background:#f8fafc }
+    .segmented{display:inline-flex;border-radius:9999px;border:1px solid #e5e7eb;background:#fff;padding:4px;box-shadow:0 2px 8px rgba(2,6,23,.06)}
+    .segmented .seg-btn{padding:10px 16px;font-weight:800;border-radius:9999px;color:#065f46;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap}
+    .segmented .seg-btn[aria-selected="true"]{background:#16a34a;color:#fff;box-shadow:0 6px 18px rgba(22,163,74,.24)}
+    .header{ backdrop-filter:saturate(140%) blur(10px) }
+    .pulse{ position:relative; display:inline-flex; align-items:center; justify-content:center; height:24px; padding:0 .5rem; min-width:42px; border-radius:9999px; background:#e6f7f7; color:#006666; border:1px solid #99d9d9; font-size:10px; font-weight:800; letter-spacing:.02em; text-transform:lowercase; line-height:1; animation:pulse-ring 2s infinite; }
+    @keyframes pulse-ring{ 0%{ box-shadow:0 0 0 0 rgba(0,102,102,.35) } 70%{ box-shadow:0 0 0 12px rgba(0,102,102,0) } 100%{ box-shadow:0 0 0 0 rgba(0,102,102,0) } }
+    @media (prefers-reduced-motion:reduce){ .pulse{ animation:none } .card-modern{ transition:none } }
+    
+    /* UPDATED: Installer cards with coating-register style */
+    .installer-card {
+      background: #fff;
+      border-radius: 1.25rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+      padding: 1.5rem;
+    }
+    .installer-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-color: var(--brand);
+    }
+    .installer-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .installer-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #f1f5f9;
+      flex-shrink: 0;
+    }
+    .installer-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .installer-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .installer-name {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .installer-company {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+    .installer-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: #f59e0b;
+    }
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .level-top {
+      background: rgba(34, 197, 94, 0.1);
+      color: #166534;
+    }
+    .level-mid {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+    }
+    .coating-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .coating-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+    }
+    .installer-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .price-section {
+      text-align: right;
+    }
+    .price-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 0.25rem;
+    }
+    .price-amount {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--brand);
+    }
+    
+    .filter-bar{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px }
+    .filter-left{ display:flex; align-items:center; gap:10px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; }
+    .filter-left > *{ scroll-snap-align:center; }
+    .filter-title{ font-size:.9rem; font-weight:600; color:#111827; flex:0 0 auto; }
+    .filter-right{ display:flex; align-items:center; gap:10px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch }
+    .place-badge{ display:inline-flex; align-items:center; gap:.4rem; font-weight:700; font-size:.9rem; padding:.4rem .6rem; border-radius:.75rem; border:1px solid #cbd5e1; background:#fff; color:#0f172a; white-space:nowrap; }
+    .place-badge button{ font-weight:800; }
+    .switch{ position:relative; display:inline-flex; align-items:center; gap:.6rem; font-size:.95rem; color:#475569; user-select:none }
+    .switch input{ position:absolute; opacity:0; pointer-events:none }
+    .switch-track{ width:50px; height:28px; background:#e2f3f3; border:1px solid #b5e0e0; border-radius:9999px; display:inline-block; position:relative; transition:background .2s, border-color .2s; box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 2px 6px rgba(2,6,23,.06) }
+    .switch-handle{ position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:9999px; background:#fff; box-shadow:0 2px 6px rgba(2,6,23,.2); transition:left .18s ease, box-shadow .2s }
+    .switch input:checked + .switch-track{ background:#0fb07b; border-color:#0a8b62 }
+    .switch input:checked + .switch-track .switch-handle{ left:24px }
+    .switch input:focus-visible + .switch-track{ outline:none; box-shadow:var(--ring) }
+    .footer{ background:#0b1220; color:#cbd5e1; border-top:1px solid rgba(255,255,255,.06) }
+    .footer a{ color:#cbd5e1 } .footer a:hover{ color:#ffffff }
+    .logo-row img{ height:28px; width:auto; object-fit:contain; filter:grayscale(100%); opacity:.85; transition:opacity .15s, filter .15s }
+    .logo-row img:hover{ filter:none; opacity:1 }
+    .shadow-card{box-shadow:0 10px 28px rgba(2,6,23,.08)}
+    .gallery img{object-fit:cover;width:100%;height:100%;border-radius:.75rem}
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+    .modal{ position:fixed; inset:0; display:none; place-items:end; background:rgba(2,6,23,.5); backdrop-filter:blur(3px); padding:1rem; z-index:1000; }
+    .modal.open{ display:grid; }
+    .modal > div{ width:100%; max-width:700px; margin-inline:auto; border-top-left-radius:1.25rem; border-top-right-radius:1.25rem; margin-bottom:calc(0px + var(--safe-bottom)); }
+    body.modal-open{ overflow:hidden; }
+    input, select, textarea { font-size:16px; }
+    input[type="text"], input[type="email"], input[type="date"], textarea, select{ padding:.875rem 1rem; border-radius:1rem; border:1px solid #cbd5e1; }
+    input:focus, textarea:focus, select:focus{ outline:none; box-shadow:var(--ring); border-color:#93c5c5 }
+    .sticky-cta{ position:sticky; bottom:calc(0px + var(--safe-bottom)); background:linear-gradient(to top, rgba(255,255,255,.98), rgba(255,255,255,.9)); padding-top:.5rem; margin-top:.25rem; }
+    .hero-title{ font-size:clamp(1.7rem,5.5vw,3.1rem); line-height:1.15; }
+    
+    /* Consistent field sizing */
+    .form-field { width: 100%; }
+    .form-field input, .form-field select { width: 100%; }
+    
+    /* Vehicle condition info */
+    .vehicle-condition-info { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      margin-top: 0.5rem; 
+      font-size: 0.8rem; 
+      color: #475569; 
+    }
+    .info-icon { 
+      width: 16px; 
+      height: 16px; 
+      border-radius: 50%; 
+      background: #006666; 
+      color: white; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 10px; 
+      cursor: pointer; 
+    }
+    
+    /* Improved header styling */
+    .header-nav a {
+      color: #1e293b;
+      font-weight: 700;
+      transition: color 0.2s ease;
+    }
+    .header-nav a:hover {
+      color: #006666;
+    }
+    
+    /* Improved info chips styling */
+    .info-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .info-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #334155;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+    .info-chip:hover {
+      background: #f1f5f9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    .info-chip-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: #006666;
+      border-radius: 50%;
+      color: white;
+      flex-shrink: 0;
+    }
+    
+    /* Alternate hero section styling */
+    .alt-hero {
+      background: #f8fafc;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .alt-hero-title {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 900;
+      color: #006666;
+      margin-bottom: 1rem;
+    }
+    
+    /* Desktop-specific styles */
+    @media (max-width: 480px){
+      .installer-card {
+        padding: 1.25rem;
+      }
+      .installer-card-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .installer-avatar {
+        align-self: center;
+      }
+      .installer-actions {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .price-section {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <a href="#main" class="skip" data-i18n="skip.toContent">Hopp til innhold</a>
+  
+
+<!-- Header -->
+<header class="header sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200" style="padding-top:var(--safe-top)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3">
+    <!-- LEFT: Logo -->
+    <div class="flex items-center gap-6">
+      <a href="./index.html" class="flex items-center gap-2" aria-label="Coatify forside">
+        <img src="./Img/coatify-logo.svg" alt="Coatify" class="w-auto object-contain" style="height:48px" fetchpriority="high" decoding="async">
+      </a>
+    </div>
+
+    <!-- RIGHT: Menu + language + installer button -->
+    <div class="flex items-center gap-4">
+      <!-- Desktop navigation -->
+      <nav class="hidden md:flex items-center gap-6 text-sm header-nav" aria-label="Hovedmeny">
+        <a href="#book" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.book">Bestill</a>
+        <a href="#installers" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.installers">Installatører</a>
+        <a href="#how" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.how">Slik fungerer det</a>
+        <a href="#faq" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.faq">FAQ</a>
+        <!-- FIKSET: Coating Register link -->
+        <a href="./coating-register.html" class="hover:text-slate-900 min-h-[44px] inline-flex items-center font-extrabold text-emerald-700">Coating Register</a>
+      </nav>
+
+      <!-- ✅ Updated "Become an Installer" button (desktop) -->
+      <a href="./installer.html" class="hidden md:inline-flex btn btn-primary px-5" data-i18n="cta.beInstaller">Bli installatør</a>
+
+      <!-- Language (desktop) -->
+      <details class="relative hidden md:block" id="desktopLangSelector">
+        <summary class="list-none p-2 rounded-full border border-slate-200 min-h-[44px] min-w-[44px] grid place-items-center hover:bg-slate-50 cursor-pointer" aria-label="Bytt språk" role="button">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke-width="2"></circle>
+            <path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </summary>
+        <ul class="absolute right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-xl py-2 z-50">
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="no">Norsk</button></li>
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="sv">Svenska</button></li>
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="da">Dansk</button></li>
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="en">English</button></li>
+        </ul>
+      </details>
+
+      <!-- Language (mobile) -->
+      <details class="relative md:hidden" id="mobileLangSelector">
+        <summary class="list-none p-2 rounded-full border border-slate-200 min-h-[44px] min-w-[44px] grid place-items-center" aria-label="Bytt språk" role="button">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke-width="2"></circle>
+            <path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </summary>
+        <ul class="absolute right-0 mt-2 w-44 bg-white border border-slate-200 shadow-lg rounded-xl py-2 z-50">
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="no">Norsk</button></li>
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="sv">Svenska</button></li>
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="da">Dansk</button></li>
+          <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="en">English</button></li>
+        </ul>
+      </details>
+
+      <!-- Menu button for mobile -->
+      <button id="menuBtn" class="md:hidden p-2 rounded-lg border border-slate-200 min-h-[44px] min-w-[44px]" aria-controls="mobileNav" aria-expanded="false" aria-label="Åpne meny">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ Updated Mobile nav -->
+  <div id="mobileNav" class="md:hidden hidden border-t border-slate-200" role="region" aria-label="Mobilmeny">
+    <nav class="px-4 py-3 grid gap-1.5 text-slate-700">
+      <a href="#book" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.book">Bestill</a>
+      <a href="#installers" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.installers">Installatører</a>
+      <a href="#how" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.how">Slik fungerer det</a>
+      <a href="#faq" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.faq">FAQ</a>
+      <!-- FIKSET: Coating Register link for mobile -->
+      <a href="./coating-register.html" class="p-3 rounded-xl hover:bg-slate-100 font-extrabold text-emerald-700">Coating Register</a>
+      <!-- ✅ Updated mobile "Bli installatør" button -->
+      <a href="./installer.html" class="p-3 rounded-xl hover:bg-slate-100 font-extrabold text-emerald-700" data-i18n="cta.beInstaller">Bli installatør</a>
+      <div class="pt-2">
+        <label class="sr-only" for="langSelectMobile" data-i18n="lang.label">Språk</label>
+        <select id="langSelectMobile" class="w-full">
+          <option value="no">Norsk</option>
+          <option value="sv">Svenska</option>
+          <option value="da">Dansk</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </nav>
+  </div>
+</header>
+
+  <main id="main">
+    <!-- Hero / Booking -->
+    <section id="home" class="bg-[linear-gradient(180deg,#ffffff,rgba(0,102,102,.06))]">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 md:py-16 grid lg:grid-cols-2 gap-8">
+        <div class="flex flex-col justify-center">
+          <h1 class="hero-title font-extrabold tracking-tight text-slate-900">
+            <span data-i18n="hero.title1">Book keramisk coating</span>
+            <span style="color:#006666" data-i18n="hero.title2">raskt, trygt og enkelt</span>
+          </h1>
+          <p class="mt-3 text-slate-600 max-w-xl text-[clamp(0.98rem,2.8vw,1.05rem)]" data-i18n="hero.desc">
+            Finn verifiserte installatører, åpne profilen for galleri, pakker og chat — og les tydelig om coating-typen før du forespør.
+          </p>
+          
+          <!-- NEW: Improved info chips -->
+          <div class="info-chips-container">
+            <div class="info-chip">
+              <div class="info-chip-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <span data-i18n="hero.chip1">Verifiserte aktører</span>
+            </div>
+            <div class="info-chip">
+              <div class="info-chip-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <span data-i18n="hero.chip2">Garanti opptil 7 år</span>
+            </div>
+            <div class="info-chip">
+              <div class="info-chip-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <span data-i18n="hero.chip3">Årlig recoat</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="book" class="lg:ml-auto">
+          <form class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card grid gap-4" id="bookingForm" aria-labelledby="bookingTitle">
+            <div>
+              <h2 id="bookingTitle" class="text-lg font-extrabold text-slate-900" data-i18n="book.start">Start bestilling</h2>
+              <p class="text-sm text-slate-600" data-i18n="book.desc">Fyll inn litt info så viser vi relevante installatører.</p>
+            </div>
+
+            <div>
+              <span class="text-sm font-semibold text-slate-800 block" data-i18n="book.service">Tjeneste</span>
+              <div class="mt-2 segmented" role="tablist" aria-label="Velg tjeneste">
+                <button type="button" class="seg-btn" data-service="coating" role="tab" aria-selected="true" data-i18n="service.coating">Keramisk coating</button>
+                <button type="button" class="seg-btn" data-service="wrapping" role="tab" aria-selected="false" data-i18n="service.wrapping">Wrapping</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="form-field">
+                <label for="city" class="text-sm font-semibold" data-i18n="book.city">By</label>
+                <input id="city" name="city" placeholder="F.eks. Oslo" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" autocomplete="address-level2" inputmode="text" required>
+              </div>
+              <div class="form-field">
+                <label for="time" class="text-sm font-semibold" data-i18n="book.time">Ønsket tid</label>
+                <input id="time" type="date" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" enterkeyhint="done" required>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-sm font-semibold text-slate-800" data-i18n="book.condition">Bilens tilstand</span>
+              <div class="mt-2 segmented" role="tablist" aria-label="Bilens tilstand">
+                <button type="button" class="seg-btn" data-cond="new" aria-selected="true" data-i18n="cond.new">Helt ny</button>
+                <button type="button" class="seg-btn" data-cond="nearly" aria-selected="false" data-i18n="cond.nearly">Nesten ny</button>
+                <button type="button" class="seg-btn" data-cond="older" aria-selected="false" data-i18n="cond.older">Eldre bil</button>
+              </div>
+              <!-- NEW: Vehicle condition info text and info button -->
+              <div class="vehicle-condition-info">
+                <span>Eldre biler kan kreve riperfjernelse eller til og med paint correction</span>
+                <button class="info-icon" aria-label="Mer informasjon om eldre biler" data-info="vehicle-condition">i</button>
+              </div>
+            </div>
+
+            <fieldset>
+              <legend class="text-sm font-semibold" data-i18n="book.size">Bilstørrelse</legend>
+              <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <label class="border border-slate-300 rounded-xl px-3 py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="size" value="small" class="accent-emerald-600" checked aria-label="Liten" >
+                  <span data-i18n="size.small">Liten</span>
+                </label>
+                <label class="border border-slate-300 rounded-xl px-3 py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="size" value="medium" class="accent-emerald-600" aria-label="Middels">
+                  <span data-i18n="size.medium">Middels</span>
+                </label>
+                <label class="border border-slate-300 rounded-xl px-3 py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="size" value="large" class="accent-emerald-600" aria-label="Stor/SUV">
+                  <span data-i18n="size.large">Stor/SUV</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="sticky-cta">
+              <button type="submit" class="mt-2 w-full sm:w-auto btn btn-primary">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round"/></svg>
+                <span data-i18n="book.find">Finn installatører</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alternate Hero Section (Hidden by default) -->
+    <section id="alt-hero" class="alt-hero hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <button id="backButton" class="btn btn-outline mb-4">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Tilbake
+        </button>
+        <h1 class="alt-hero-title">Book keramisk coating raskt, trygt og enkelt</h1>
+      </div>
+    </section>
+
+    <!-- Installers -->
+    <section id="installers" class="py-8 sm:py-12">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="filter-bar">
+          <div class="filter-left">
+            <span class="filter-title" data-i18n="filter.sort">Sorter</span>
+            <div class="segmented" role="tablist" aria-label="Sorter">
+              <button type="button" class="seg-btn" data-sort="best" aria-selected="true" data-i18n="sort.best">Best &amp; raskest</button>
+              <button type="button" class="seg-btn" data-sort="top" aria-selected="false" data-i18n="sort.top">De beste først</button>
+              <button type="button" class="seg-btn" data-sort="cheap" aria-selected="false" data-i18n="sort.cheap">Billigst først</button>
+            </div>
+
+            <label class="switch" for="filterTop">
+              <input id="filterTop" type="checkbox" />
+              <span class="switch-track" aria-hidden="true"><span class="switch-handle"></span></span>
+              <span data-i18n="filter.topOnly">Vis kun toppnivå</span>
+            </label>
+          </div>
+
+          <div class="filter-right">
+            <span id="currentPlace" class="place-badge" aria-live="polite" title="Sted som vises">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 21s-7-4.35-7-10a7 7 0 1 1 14 0c0 5.65-7 10-7 10Zm0-9a3 3 0 1 0 0-6 3 3 0 1 0 0 6Z" stroke-width="1.8"/></svg>
+              <span data-i18n="place.all">Viser: Alle steder</span>
+              <button id="clearPlace" class="btn btn-outline" type="button" style="padding:.35rem .6rem; font-size:.85rem" data-i18n="place.clear">Fjern</button>
+            </span>
+          </div>
+        </div>
+
+        <div id="installerGrid" class="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section id="installerProfile" class="hidden py-6 sm:py-10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <button id="backToList" class="mb-4 btn btn-outline" type="button" aria-label="Tilbake til søkeresultater" data-i18n="profile.back">← Tilbake</button>
+        <div id="profileHeader" class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-card"></div>
+        <div class="mt-6">
+          <h3 class="text-lg font-extrabold" data-i18n="profile.gallery">Galleri</h3>
+          <div id="profileGallery" class="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 gallery"></div>
+        </div>
+        <div class="mt-8">
+          <h3 class="text-lg font-extrabold" data-i18n="profile.packages">Tjenester &amp; pakker</h3>
+          <div id="profilePackages" class="mt-3 grid gap-4"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- How it works -->
+  <section id="how" class="py-12 sm:py-16 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <header class="text-center max-w-2xl mx-auto">
+        <span class="inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-extrabold text-emerald-700 tracking-wide" data-i18n="how.badge"> Enkelt i tre steg </span>
+        <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900" data-i18n="how.title">Slik fungerer det</h2>
+        <p class="mt-2 text-slate-600" data-i18n="how.desc">Fra søk til skinnende resultat – over hele Norge.</p>
+      </header>
+
+      <div class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <article class="h-full rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-emerald-200">
+          <div class="flex flex-col items-center text-center">
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="color:var(--brand)">
+                <circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path>
+              </svg>
+            </span>
+            <div class="mt-4">
+              <div class="text-[11px] font-extrabold text-emerald-700/80 tracking-wide" data-i18n="how.step1.badge">STEG 1</div>
+              <h3 class="mt-1 text-lg font-extrabold text-slate-900" data-i18n="how.step1.title">Finn bilpleie</h3>
+              <p class="mt-1.5 text-sm leading-6 text-slate-600" data-i18n="how.step1.desc"> Se verifiserte aktører, sammenlign pakker og velg behandlingen som passer din bil — uansett hvor i landet du er. </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="h-full rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-emerald-200">
+          <div class="flex flex-col items-center text-center">
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--brand)">
+                <circle cx="7.5" cy="7.5" r="3.5"/><path d="M10.8 10.8l3.7 3.7M14.5 14.5l3.5 3.5h2v-2l-3.5-3.5"/>
+              </svg>
+            </span>
+            <div class="mt-4">
+              <div class="text-[11px] font-extrabold text-emerald-700/80 tracking-wide" data-i18n="how.step2.badge">STEG 2</div>
+              <h3 class="mt-1 text-lg font-extrabold text-slate-900" data-i18n="how.step2.title">Lever nøkkel</h3>
+              <p class="mt-1.5 text-sm leading-6 text-slate-600" data-i18n="how.step2.desc"> Lever til en godkjent installatør av keramisk lakkforsegling. Pris og omfang er avtalt på forhånd — ingen overraskelser. </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="h-full rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-emerald-200">
+          <div class="flex flex-col items-center text-center">
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="color:var(--brand)">
+                <path d="M12 3l7 3v5c0 5-4 9-7 10-3-1-7-5-7-10V6l7-3z"></path><path d="M8.5 11.5l2 2 4-4"></path>
+              </svg>
+            </span>
+            <div class="mt-4">
+              <div class="text-[11px] font-extrabold text-emerald-700/80 tracking-wide" data-i18n="how.step3.badge">STEG 3</div>
+              <h3 class="mt-1 text-lg font-extrabold text-slate-900" data-i18n="how.step3.title">Nyt resultatet</h3>
+              <p class="mt-1.5 text-sm leading-6 text-slate-600" data-i18n="how.step3.desc"> Hent bilen skinnende ren — med dokumentert garanti og langvarig beskyttelse. Følg årlig opp for å beholde garantien. </p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+<!-- Quick Search Section -->
+<section class="quick-search py-12 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Søk i Coating Registeret</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">Finn raskt informasjon om alle coating-produkter i vårt register. Skriv navnet på produktet du leter etter.</p>
+    </div>
+    
+    <!-- Search Container -->
+    <div class="relative max-w-2xl mx-auto">
+      <div class="relative">
+        <input 
+          type="text" 
+          id="quickSearchInput" 
+          class="w-full py-3 px-4 pr-12 rounded-xl border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-300 shadow-sm"
+          placeholder="Skriv coating-navn for å søke..."
+          autocomplete="off"
+        />
+        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Dropdown Results -->
+      <div id="quickSearchResults" class="absolute z-10 w-full mt-1 bg-white rounded-xl shadow-lg border border-gray-200 max-h-80 overflow-y-auto hidden">
+        <!-- Results will be populated here by JavaScript -->
+      </div>
+    </div>
+    
+    <!-- Popular Brands Section -->
+    <div class="mt-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-8 text-center">Populære Merker</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center justify-items-center">
+        <img src="./Img/DropOff.png" alt="Drop Off logo" class="h-12 sm:h-14 object-contain grayscale hover:grayscale-0 transition duration-300">
+        <img src="./Img/Ditec.png" alt="Ditec logo" class="h-10 sm:h-12 object-contain grayscale hover:grayscale-0 transition duration-300">
+        <img src="./Img/Ceramic_pro.png" alt="Ceramic Pro logo" class="h-10 sm:h-12 object-contain grayscale hover:grayscale-0 transition duration-300">
+        <img src="./Img/krytex_logo.svg" alt="Krytex logo" class="h-10 sm:h-12 object-contain grayscale hover:grayscale-0 transition duration-300">
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Quick search functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const quickSearchInput = document.getElementById('quickSearchInput');
+    const quickSearchResults = document.getElementById('quickSearchResults');
+    
+    // Use the coatingsData from the main register
+    const coatingsData = window.coatingsData || [];
+    
+    // Search function
+    function performQuickSearch(query) {
+      if (!query || query.length < 2) {
+        quickSearchResults.classList.add('hidden');
+        return;
+      }
+      
+      const results = coatingsData.filter(coating => 
+        coating.name.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5); // Limit to 5 results
+      
+      displayQuickSearchResults(results);
+    }
+    
+    // Display results in dropdown
+    function displayQuickSearchResults(results) {
+      if (results.length === 0) {
+        quickSearchResults.innerHTML = `
+          <div class="p-4 text-center text-gray-500">
+            Ingen produkter funnet. Prøv et annet søkeord.
+          </div>
+        `;
+        quickSearchResults.classList.remove('hidden');
+        return;
+      }
+      
+      quickSearchResults.innerHTML = results.map(coating => `
+        <a href="coating-register.html#coating-${coating.id}" class="block p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors duration-200">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+              ${coating.imageUrl ? 
+                `<img src="${coating.imageUrl}" alt="${coating.name}" class="w-8 h-8 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : 
+                ''
+              }
+              <div class="text-xs text-gray-400 text-center hidden">${coating.name.substring(0, 2)}</div>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">${coating.name}</h3>
+              <p class="text-sm text-gray-500 truncate max-w-xs">${coating.properties.no.substring(0, 60)}...</p>
+            </div>
+          </div>
+        </a>
+      `).join('');
+      
+      quickSearchResults.classList.remove('hidden');
+    }
+    
+    // Event listeners
+    quickSearchInput.addEventListener('input', function() {
+      performQuickSearch(this.value);
+    });
+    
+    quickSearchInput.addEventListener('focus', function() {
+      if (this.value.length >= 2) {
+        performQuickSearch(this.value);
+      }
+    });
+    
+    // Hide results when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!quickSearchInput.contains(e.target) && !quickSearchResults.contains(e.target)) {
+        quickSearchResults.classList.add('hidden');
+      }
+    });
+    
+    // Handle keyboard navigation
+    quickSearchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        quickSearchResults.classList.add('hidden');
+        this.blur();
+      }
+    });
+  });
+</script>
+
+  <!-- FAQ -->
+<section id="faq" class="py-12 sm:py-16 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <header class="text-center max-w-2xl mx-auto">
+      <span class="inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-extrabold text-emerald-700 tracking-wide" data-i18n="faq.badge">Ofte stilte spørsmål</span>
+      <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900" data-i18n="faq.title">FAQ</h2>
+      <p class="mt-2 text-slate-600" data-i18n="faq.desc">Svar på de vanligste spørsmålene om keramisk coating, garanti og bestilling hos Coatify.</p>
+    </header>
+
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+      <!-- Item -->
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q1">Hva er keramisk coating – og hva beskytter den mot?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a1">
+          Keramisk coating er en lakkforsegling (ofte SiO₂-basert) som binder seg til klarlakken og gir enklere vask, sterk vannskrekk og økt kjemikalieresistens. Den erstatter ikke PPF eller bra vaskerutiner, men gir langvarig beskyttelse og glans.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q2">Hvor lenge varer en coating – og hva betyr årlig recoat?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a2">
+          Varighet avhenger av kjemi, forarbeid og vedlikehold. De fleste pakker holder 3–7 år. Årlig recoat er en enkel vedlikeholdsbehandling som fornyer hydrofobien og trengs for å beholde garantien.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q3">Hvordan velger jeg riktig pakke og leverandør?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a3">
+          Bruk «Finn installatører» og filtrer på sted, nivå og pris. Åpne profilen for galleri, merke/kjemi og pakker. Du kan også chatte direkte før du forespør – så får du trygg avklaring.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q4">Hva innebærer «verifisert installatør» på Coatify?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a4">
+          Verifiserte aktører har dokumentert kompetanse, godkjenninger og sporbar drift. Vi prioriterer seriøse bedrifter med tydelige rutiner, avtaler og garantioppfølging.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q5">Hvor lang tid tar behandlingen – må bilen stå inne?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a5">
+          Typisk 8–48 timer avhengig av forarbeid, lag og herdetid. Bilen bør stå tørt og støvfritt under herding – installatøren oppgir nøyaktig tidsbruk i pakkedetaljene.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q6">Påvirker pris bilstørrelse og lakktilstand?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a6">
+          Ja. Større biler og lakk med behov for mer polering koster mer. Velg bilstørrelse i skjemaet og oppgi tilstand – så får du riktigere fra-priser og forslag.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q7">Kan jeg kombinere coating med vinduer, felger og plast?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a7">
+          Absolutt. Mange pakker inkluderer vinduer og detaljer. Sjekk hva som er med – eller be om tillegg i chat før du forespør.
+        </p>
+      </details>
+
+      <details class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-card transition-all duration-200 faq-item">
+        <summary class="flex items-start justify-between gap-3 cursor-pointer list-none">
+          <h3 class="font-extrabold text-slate-900" data-i18n="faq.q8">Tilbyr dere wrapping også?</h3>
+          <svg class="icon shrink-0 chev transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <p class="mt-3 text-sm leading-6 text-slate-700" data-i18n="faq.a8">
+          Ja – velg «Wrapping» under Tjeneste i bestillingsskjemaet. Vi viser installatører som tilbyr dette i ditt område.
+        </p>
+      </details>
+    </div>
+  </div>
+
+  <!-- FAQ styles (ikon-rotasjon) -->
+  <style>
+    .faq-item[open] .chev { transform: rotate(180deg); }
+  </style>
+</section>
+
+<!-- Footer (fixed colors) -->
+<style>
+  .footer-theme { --footer-text: #064e4f; /* mørkere enn #0d787c for kontrast */ }
+  .footer-theme,
+  .footer-theme p,
+  .footer-theme h4,
+  .footer-theme a,
+  .footer-theme li { color: var(--footer-text) !important; }
+
+  .footer-theme a:hover { color: #0d787c !important; }          /* lysere hover */
+  .footer-theme a[aria-disabled="true"] {
+    pointer-events: none;                                        /* ikke klikkbar */
+    text-decoration: none;
+    opacity: 1 !important;                                       /* IKKE falmet */
+  }
+
+  /* Sosiale ikoner i ønsket farge */
+  .footer-theme .social a { color: #0d787c !important; }
+  .footer-theme .social a:hover { color: #065b5e !important; }
+</style>
+
+<footer class="footer footer-theme mt-8 bg-gray-100">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+
+    <div class="mt-10 grid gap-8 md:grid-cols-4">
+      <div class="space-y-3">
+        <a href="#home" class="inline-flex items-center gap-2" aria-label="Coatify forside">
+          <img src="./img/coatify-logo.svg" alt="Coatify" class="w-auto object-contain" style="height:var(--logo-h)" loading="lazy" decoding="async">
+        </a>
+        <p class="text-sm leading-6" data-i18n="footer.blurb">
+          Coatify kobler bileiere med verifiserte installatører av keramisk coating.
+          Sammenlign, chat og forespør – trygt og enkelt.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-extrabold tracking-wide" data-i18n="footer.product">Produkt</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#installers">Finn installatør</a></li>
+          <li><a href="#how">Slik fungerer det</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#book">Start bestilling</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-extrabold tracking-wide" data-i18n="footer.resources">Ressurser</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#" aria-disabled="true">Blogg (kommer)</a></li>
+          <li><a href="#" aria-disabled="true">For installatører (kommer)</a></li>
+          <li><a href="#" aria-disabled="true">Merker &amp; kjemi (kommer)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-extrabold tracking-wide" data-i18n="footer.legal">Juridisk</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#" aria-disabled="true">Vilkår</a></li>
+          <li><a href="#" aria-disabled="true">Personvern</a></li>
+          <li><a href="#" aria-disabled="true">Cookies</a></li>
+        </ul>
+
+        <div class="social mt-4 flex items-center gap-3">
+          <a href="#" aria-label="Instagram" class="p-2 rounded-lg hover:bg-gray-200 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">
+            <svg class="icon w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 0-5-5V7a5 5 0 0 1 5-5Zm5 5a5 5 0 1 0 0 10 5 5 0 1 0 0-10Zm6.5-.25a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 1 0 0-2.5Z"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook" class="p-2 rounded-lg hover:bg-gray-200 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">
+            <svg class="icon w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2h-3a5 5 0 0 0-5 5v3H6v4h3v8h4Z"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn" class="p-2 rounded-lg hover:bg-gray-200 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">
+            <svg class="icon w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.75H3.56V21h3.38V8.75ZM5.25 3a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 1 0 0-4.5ZM20.44 21h-3.36v-6.02c0-1.44-.03-3.29-2.01-3.29-2.02 0-2.33 1.57-2.33 3.19V21h-3.36V8.75h3.22v1.67h.05c.45-.86 1.55-1.77 3.19-1.77 3.41 0 4.04 2.25 4.04 5.17V21Z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <p>© <span id="year"></span> Coatify. <span data-i18n="footer.rights">Alle rettigheter forbeholdt.</span></p>
+      <nav class="flex items-center gap-6" aria-label="Bunnmeny">
+        <a href="#how" class="min-h-[44px] inline-flex items-center">Slik fungerer det</a>
+        <a href="#installers" class="min-h-[44px] inline-flex items-center">Finn installatør</a>
+        <a href="#faq" class="min-h-[44px] inline-flex items-center">FAQ</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<!-- NEW: Vehicle Condition Info Modal -->
+<div id="vehicleConditionModal" class="modal" aria-hidden="true">
+  <div class="bg-white p-6 rounded-2xl shadow-lg max-w-md mx-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-extrabold">Informasjon om eldre biler</h3>
+      <button class="btn btn-outline p-2" data-close-modal aria-label="Lukk">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <p>Eldre biler kan kreve riperfjernelse eller til og med paint correction for å oppnå best mulig resultat med keramisk coating. Dette påvirker både tidsbruk og pris.</p>
+    <div class="mt-4 flex justify-end">
+      <button class="btn btn-primary" data-close-modal>Forstått</button>
+    </div>
+  </div>
+</div>
+
+<!-- Message Modal -->
+<div id="messageModal" class="modal" aria-hidden="true">
+  <div class="bg-white p-6 rounded-2xl shadow-lg">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-extrabold" data-i18n="modal.msgTitle">Send melding</h3>
+      <button class="btn btn-outline p-2" data-close-modal aria-label="Lukk">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <form id="messageForm" class="grid gap-4">
+      <div>
+        <label for="msgName" class="block text-sm font-semibold" data-i18n="modal.nameLabel">Navn</label>
+        <input id="msgName" type="text" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required>
+      </div>
+      <div>
+        <label for="msgEmail" class="block text-sm font-semibold" data-i18n="modal.emailLabel">E-post</label>
+        <input id="msgEmail" type="email" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required>
+      </div>
+      <div>
+        <label for="msgText" class="block text-sm font-semibold" data-i18n="modal.messageLabel">Melding</label>
+        <textarea id="msgText" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required></textarea>
+      </div>
+      <div class="flex gap-3 justify-end">
+        <button type="button" class="btn btn-outline" data-close-modal data-i18n="modal.cancel">Avbryt</button>
+        <button type="submit" class="btn btn-primary" data-i18n="modal.send">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Info Modal -->
+<div id="infoModal" class="modal" aria-hidden="true">
+  <div class="bg-white p-6 rounded-2xl shadow-lg">
+    <div class="flex justify-between items-center mb-4">
+      <h3 id="infoTitle" class="text-lg font-extrabold">Coating Info</h3>
+      <button class="btn btn-outline p-2" data-close-infomodal aria-label="Lukk">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="grid gap-3 text-sm">
+      <div>
+        <span class="font-semibold" id="infoChemistry"></span>
+      </div>
+      <div>
+        <span class="font-semibold" data-i18n="info.unique">Hva er unikt</span>
+        <p id="infoUnique" class="mt-1"></p>
+      </div>
+      <div>
+        <span class="font-semibold" data-i18n="info.bestFor">Passer best for</span>
+        <p id="infoBestFor" class="mt-1"></p>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <span class="font-semibold" data-i18n="info.layersLabel">Anbefalt lag</span>
+          <p id="infoLayers" class="mt-1"></p>
+        </div>
+        <div>
+          <span class="font-semibold" data-i18n="info.durationLabel">Forventet varighet</span>
+          <p id="infoDurability" class="mt-1"></p>
+        </div>
+      </div>
+      <div>
+        <span class="font-semibold" data-i18n="info.notes">Notater</span>
+        <p id="infoNotes" class="mt-1"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+  <!-- Data (unchanged) -->
+  <script id="installersData" type="application/json">{"installers":[{"id":"arild","name":"Arild Pettersen","company":"K2000 Bilpleie Oslo AS","level":"TOP","rating":4.9,"reviews":399,"city":"Oslo","years":7,"cars":711,"avatar":"https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=256&auto=format&fit=crop","gallery":["https://images.unsplash.com/photo-1515923162047-1b0cf7f2fb0f?q=80&w=800&auto=format&fit=crop","https://images.unsplash.com/photo-1521334726092-b509a19597c6?q=80&w=800&auto=format&fit=crop","https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=800&auto=format&fit=crop","https://images.unsplash.com/photo-1553440561-3f8b0f9f6b18?q=80&w=800&auto=format&fit=crop"],"packages":[{"id":"popular","title":"Mest populære pakke","price":758,"warranty":"5 ÅRS GARANTI","recoat":250,"time":"48t","includes":["Nødvendig polering for riper","1 lag keramisk coating"],"brand":"Drop Off","brand_slug":"drop-off"},{"id":"best","title":"Beste pakke","price":1258,"warranty":"7 ÅRS GARANTI","recoat":300,"time":"48t","includes":["Polering for klarhet","1 lag Nano Graphene / Art Deshine"],"brand":"Art Deshine","brand_slug":"art-deshine"}]},{"id":"k2000-bergen","name":"K2000 Bilpleie Bergen AS","company":"K2000 Bilpleie Bergen AS","level":"MID","rating":4.8,"reviews":180,"city":"Bergen","years":6,"cars":620,"avatar":"https://images.unsplash.com/photo-1507120410856-1f35574c3b45?q=80&w=256&auto=format&fit=crop","gallery":["https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop","https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800&auto=format&fit=crop"],"packages":[{"id":"standard","title":"Standard coating","price":758,"warranty":"5 ÅRS GARANTI","recoat":250,"time":"8t","includes":["Polering lett","1 lag coating"],"brand":"Drop Off","brand_slug":"drop-off"}]},{"id":"mohamed","name":"Mohamed Bilal","company":"Autogiganten AS","level":"MID","rating":4.9,"reviews":212,"city":"Oslo","years":5,"cars":510,"avatar":"https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=256&auto=format&fit=crop","gallery":["https://images.unsplash.com/photo-1471479911175-8f8423c7e0c7?q=80&w=800&auto=format&fit=crop","https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop"],"packages":[{"id":"ultra","title":"Ditec Ultra — Hele bilen","price":958,"warranty":"5 ÅRS GARANTI","recoat":250,"time":"48t","includes":["Polering for riper","1 lag Ditec Ultra","Vinduer og plastdetaljer"],"brand":"Ditec Ultra","brand_slug":"ditec-ultra"}]}]}</script>
+
+  <!-- Coatings (unchanged) -->
+  <script id="coatingsInfo" type="application/json">{"drop-off":{"display_name":"Drop Off Ceramic Coating","chemistry":"SiO2-baserte polymerer","unique":"Rask påføring, robust vannskrekk og fin glans for daglig bruk.","best_for":"Pendlerbiler og nye biler som ønsker god beskyttelse uten premium-pris.","durability_years":3,"recommended_layers":1,"notes":"Årlig recoat anbefales for å opprettholde effekt."},"art-deshine":{"display_name":"Art Deshine Nano Graphene","chemistry":"Graphene-forsterket SiO2","unique":"Økt ripebestandighet og kjemikalieresistens, dyp wet-look.","best_for":"Entusiaster og premium-biler som ønsker topp finish og lang holdbarhet.","durability_years":5,"recommended_layers":1,"notes":"Krever god forberedelse (paint correction) for maks resultat."},"ditec-ultra":{"display_name":"Ditec Ultra","chemistry":"Proprietær multi-lags keramisk system","unique":"God garantistruktur via verkstednettverk, solid allround-beskyttelse.","best_for":"Kunder som ønsker trygghet i form av nettverksgaranti og standardisert service.","durability_years":5,"recommended_layers":1,"notes":"Årlig kontroll hos godkjent installatør for å beholde garantien."}}</script>
+
+  <!-- Scripts -->
+  <script>
+    // Helpers
+    const $ = (s,scope=document)=>scope.querySelector(s);
+    const $$ = (s,scope=document)=>[...scope.querySelectorAll(s)];
+    const addListener = (el,ev,fn,opts={})=>el?.addEventListener(ev,fn,{passive:true,...opts});
+    const NOK = new Intl.NumberFormat('no-NO',{style:'currency',currency:'NOK',maximumFractionDigits:0});
+    const YEAR = new Date().getFullYear();
+    $('#year').textContent = YEAR;
+
+    // Mobile menu
+    const menuBtn = $('#menuBtn'); const mobileNav = $('#mobileNav');
+    menuBtn?.addEventListener('click', ()=>{ const open=!mobileNav.classList.toggle('hidden'); menuBtn.setAttribute('aria-expanded', String(open)); });
+    $$('#mobileNav a').forEach(a=> a.addEventListener('click', ()=>{ mobileNav.classList.add('hidden'); menuBtn?.setAttribute('aria-expanded','false'); }));
+
+    // State
+    const SETTINGS_KEY='coatify_settings_v9';
+    const defaults={ service:'coating', condition:'new', sort:'best', topOnly:false, city:'', lang:'no' };
+    const load=()=>{ try{return JSON.parse(localStorage.getItem(SETTINGS_KEY))||{...defaults};}catch{return {...defaults}} };
+    const save=(s)=>localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    let state=load();
+
+    // Data
+    const installers = JSON.parse($('#installersData').textContent).installers;
+    const coatingsDict = JSON.parse($('#coatingsInfo').textContent);
+    function minPrice(inst){ return Math.min(...inst.packages.map(p=>p.price)); }
+
+    const levelBadge = (lvl)=> lvl==='TOP'
+      ? `<span class="level-badge level-top">TOP-NIVÅ</span>`
+      : `<span class="level-badge level-mid">MID-NIVÅ</span>`;
+
+    const byBest=(a,b)=>(b.rating-a.rating)||(b.reviews-a.reviews);
+    const byTop=(a,b)=>(a.level==='TOP'?-1:1)||byBest(a,b);
+    const byCheap=(a,b)=>(minPrice(a)-minPrice(b));
+
+    // Segmented
+    function wireSegmented(containerSel, key, attr){
+      const list = $$(containerSel+' .seg-btn');
+      list.forEach((btn, idx)=>{
+        btn.addEventListener('click', ()=>{
+          const val = btn.dataset[attr]; state[key]=val; save(state);
+          list.forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
+          if(key==='sort') renderList();
+        });
+        btn.addEventListener('keydown',(e)=>{
+          if(!['ArrowRight','ArrowLeft'].includes(e.key)) return;
+          e.preventDefault(); const dir=e.key==='ArrowRight'?1:-1; const next=(idx+dir+list.length)%list.length; list[next].focus(); list[next].click();
+        });
+      });
+      list.forEach(b=> b.setAttribute('aria-selected',(b.dataset[attr]===state[key]).toString()));
+    }
+    wireSegmented('[aria-label="Velg tjeneste"]','service','service');
+    wireSegmented('[aria-label="Bilens tilstand"]','condition','cond');
+    wireSegmented('[aria-label="Sorter"]','sort','sort');
+
+    // Filter toggle
+    const topCb=$('#filterTop');
+    if(topCb){ topCb.checked=!!state.topOnly; topCb.addEventListener('change', ()=>{ state.topOnly=topCb.checked; save(state); renderList(); }); }
+
+    // NEW: Hero section toggle functionality
+    const homeSection = $('#home');
+    const altHeroSection = $('#alt-hero');
+    const backButton = $('#backButton');
+    
+    function showAltHero() {
+      homeSection.classList.add('hidden');
+      altHeroSection.classList.remove('hidden');
+    }
+    
+    function showOriginalHero() {
+      altHeroSection.classList.add('hidden');
+      homeSection.classList.remove('hidden');
+    }
+    
+    // Booking submit - show alternate hero
+    $('#bookingForm')?.addEventListener('submit',(e)=>{
+      e.preventDefault(); 
+      const city=($('#city')?.value||'').trim(); 
+      state.city=city; 
+      save(state); 
+      updatePlaceBadge(); 
+      showAltHero();
+      location.hash='#installers';
+    });
+    
+    // Back button - show original hero
+    backButton?.addEventListener('click', ()=>{
+      showOriginalHero();
+    });
+
+    // Chips
+    function primaryCoatings(inst){
+      const slugs=[]; inst.packages.forEach(p=>{ if(p.brand_slug && !slugs.includes(p.brand_slug)) slugs.push(p.brand_slug); }); return slugs.slice(0,2);
+    }
+    function coatingChip(slug, invert=false){
+      const c=coatingsDict[slug]; const label=c?c.display_name:slug;
+      return `<span class="coating-chip">
+        <span class="label font-extrabold">${label}</span>
+        <button class="pulse" type="button" title="Mer info" aria-label="Mer info om ${label}" data-coating-info="${slug}">info</button>
+      </span>`;
+    }
+
+    // I18N (FULL dictionaries)
+    const I18N = {
+      no: { "skip.toContent":"Hopp til innhold","nav.book":"Bestill","nav.installers":"Installatører","nav.how":"Slik fungerer det","nav.faq":"FAQ","cta.beInstaller":"Bli installatør","lang.label":"Språk","hero.title1":"Book keramisk coating","hero.title2":"raskt, trygt og enkelt","hero.desc":"Finn verifiserte installatører, åpne profilen for galleri, pakker og chat — og les tydelig om coating-typen før du forespør.","hero.chip1":"Verifiserte aktører","hero.chip2":"Garanti opptil 7 år","hero.chip3":"Årlig recoat","book.start":"Start bestilling","book.desc":"Fyll inn litt info så viser vi relevante installatører.","book.service":"Tjeneste","service.coating":"Keramisk coating","service.wrapping":"Wrapping","book.city":"By","book.time":"Ønsket tid","book.condition":"Bilens tilstand","cond.new":"Helt ny","cond.nearly":"Nesten ny","cond.older":"Eldre bil","book.size":"Bilstørrelse","size.small":"Liten","size.medium":"Middels","size.large":"Stor/SUV","book.find":"Finn installatører","filter.sort":"Sorter","sort.best":"Best & raskest","sort.top":"De beste først","sort.cheap":"Billigst først","filter.topOnly":"Vis kun toppnivå","place.all":"Viser: Alle steder","place.clear":"Fjern","card.experience":"år erfaring","card.seeInstaller":"Se installatør","card.fromPrice":"Fra-pris","card.top":"TOP-NIVÅ","card.mid":"MID-NIVÅ","profile.back":"← Tilbake","profile.gallery":"Galleri","profile.packages":"Tjenester & pakker","pkg.time":"Behandlingstid","pkg.recoat":"Årlig recoat","pkg.request":"Forespør","pkg.message":"Send melding","how.badge":"Enkelt i tre steg","how.title":"Slik fungerer det","how.desc":"Fra søk til skinnende resultat – over hele Norge.","how.step1.badge":"STEG 1","how.step1.title":"Finn bilpleie","how.step1.desc":"Se verifiserte aktører, sammenlign pakker og velg behandlingen som passer din bil — uansett hvor i landet du er.","how.step2.badge":"STEG 2","how.step2.title":"Lever nøkkel","how.step2.desc":"Lever til en godkjent installatør av keramisk lakkforsegling. Pris og omfang er avtalt på forhånd — ingen overraskelser.","how.step3.badge":"STEG 3","how.step3.title":"Nyt resultatet","how.step3.desc":"Hent bilen skinnende ren — med dokumentert garanti og langvarig beskyttelse. Følg årlig opp for å beholde garantien.","footer.blurb":"Coatify kobler bileiere med verifiserte installatører av keramisk coating. Sammenlign, chat og forespør — trygt og enkelt.","footer.product":"Produkt","footer.resources":"Ressurser","footer.legal":"Juridisk","footer.blog":"Blogg (kommer)","footer.forInstallers":"For installatører (kommer)","footer.brands":"Merker & kjemi (kommer)","footer.terms":"Vilkår","footer.privacy":"Personvern","footer.cookies":"Cookies","footer.rights":"Alle rettigheter forbeholdt.","modal.msgTitle":"Send melding","modal.nameLabel":"Navn","modal.emailLabel":"E-post","modal.messageLabel":"Melding","modal.cancel":"Avbryt","modal.send":"Send","info.unique":"Hva er unikt","info.bestFor":"Passer best for","info.layersLabel":"Anbefalt lag","info.durationLabel":"Forventet varighet","info.notes":"Notater" },
+      sv: { "skip.toContent":"Hoppa till innehåll","nav.book":"Boka","nav.installers":"Installatörer","nav.how":"Så fungerar det","nav.faq":"FAQ","cta.beInstaller":"Bli installatör","lang.label":"Språk","hero.title1":"Boka keramisk coating","hero.title2":"snabbt, tryggt och enkelt","hero.desc":"Hitta verifierade installatörer, öppna profilen för galleri, paket och chat — och läs tydligt om coating-typen innan du förfrågar.","hero.chip1":"Verifierade aktörer","hero.chip2":"Garanti upp till 7 år","hero.chip3":"Årlig recoat","book.start":"Starta bokning","book.desc":"Fyll i lite info så visar vi relevanta installatörer.","book.service":"Tjänst","service.coating":"Keramisk coating","service.wrapping":"Wrapping","book.city":"Stad","book.time":"Önskad tid","book.condition":"Bilens skick","cond.new":"Helt ny","cond.nearly":"Nästan ny","cond.older":"Äldre bil","book.size":"Bilstorlek","size.small":"Liten","size.medium":"Mellan","size.large":"Stor/SUV","book.find":"Hitta installatörer","filter.sort":"Sortera","sort.best":"Bäst & snabbast","sort.top":"De bästa först","sort.cheap":"Billigast först","filter.topOnly":"Visa bara toppnivå","place.all":"Visar: Alla platser","place.clear":"Rensa","card.experience":"år erfarenhet","card.seeInstaller":"Visa installatör","card.fromPrice":"Från-pris","card.top":"TOPPNIVÅ","card.mid":"MELLANNIVÅ","profile.back":"← Tillbaka","profile.gallery":"Galleri","profile.packages":"Tjänster & paket","pkg.time":"Behandlingstid","pkg.recoat":"Årlig recoat","pkg.request":"Förfråga","pkg.message":"Skicka meddelande","how.badge":"Enkelt i tre steg","how.title":"Så fungerar det","how.desc":"Från sök till glänsande resultat — i hela landet.","how.step1.badge":"STEP 1","how.step1.title":"Hitta bilvård","how.step1.desc":"Se verifierade aktörer, jämför paket och välj behandlingen som passar din bil — oavsett var du är.","how.step2.badge":"STEP 2","how.step2.title":"Lämna nyckel","how.step2.desc":"Lämna till en godkänd installatör. Pris och omfattning är överenskommet — inga överraskningar.","how.step3.badge":"STEP 3","how.step3.title":"Njut av resultatet","how.step3.desc":"Hämta bilen skinande — med dokumenterad garanti och långvarigt skydd.","footer.blurb":"Coatify kopplar bilägare med verifierade installatörer av keramisk coating. Jämför, chatta och förfråga — tryggt och enkelt.","footer.product":"Produkt","footer.resources":"Resurser","footer.legal":"Juridik","footer.blog":"Blogg (kommer)","footer.forInstallers":"För installatörer (kommer)","footer.brands":"Varumärken & kemi (kommer)","footer.terms":"Villkor","footer.privacy":"Integritet","footer.cookies":"Cookies","footer.rights":"Alla rättigheter förbehållna.","modal.msgTitle":"Skicka meddelande","modal.nameLabel":"Namn","modal.emailLabel":"E-post","modal.messageLabel":"Meddelande","modal.cancel":"Avbryt","modal.send":"Skicka","info.unique":"Vad är unikt","info.bestFor":"Passar bäst för","info.layersLabel":"Rekommenderade lager","info.durationLabel":"Förväntad hållbarhet","info.notes":"Noteringar" },
+      da: { "skip.toContent":"Hop til indhold","nav.book":"Bestil","nav.installers":"Installatører","nav.how":"Sådan fungerer det","nav.faq":"FAQ","cta.beInstaller":"Bliv installatør","lang.label":"Sprog","hero.title1":"Book keramisk coating","hero.title2":"hurtigt, trygt og nemt","hero.desc":"Find verificerede installatører, åbn profilen for galleri, pakker og chat — og læs tydeligt om coating-typen før du forespørger.","hero.chip1":"Verificerede aktører","hero.chip2":"Garanti op til 7 år","hero.chip3":"Årlig recoat","book.start":"Start bestilling","book.desc":"Udfyld lidt info, så viser vi relevante installatører.","book.service":"Tjeneste","service.coating":"Keramisk coating","service.wrapping":"Wrapping","book.city":"By","book.time":"Ønsket tid","book.condition":"Bilens stand","cond.new":"Helt ny","cond.nearly":"Næsten ny","cond.older":"Ældre bil","book.size":"Bilstørrelse","size.small":"Lille","size.medium":"Mellem","size.large":"Stor/SUV","book.find":"Find installatører","filter.sort":"Sorter","sort.best":"Bedst & hurtigst","sort.top":"De bedste først","sort.cheap":"Billigst først","filter.topOnly":"Vis kun topniveau","place.all":"Viser: Alle steder","place.clear":"Ryd","card.experience":"års erfaring","card.seeInstaller":"Se installatør","card.fromPrice":"Fra-pris","card.top":"TOPNIVEAU","card.mid":"MIDNIVEAU","profile.back":"← Tilbage","profile.gallery":"Galleri","profile.packages":"Tjenester & pakker","pkg.time":"Behandlingstid","pkg.recoat":"Årlig recoat","pkg.request":"Forespørg","pkg.message":"Send besked","how.badge":"Nemt i tre trin","how.title":"Sådan fungerer det","how.desc":"Fra søgning til skinnende resultat — i hele landet.","how.step1.badge":"TRIN 1","how.step1.title":"Find bilpleje","how.step1.desc":"Se verificerede aktører, sammenlign pakker og vælg den rette behandling.","how.step2.badge":"TRIN 2","how.step2.title":"Aflevér nøgle","how.step2.desc":"Aflevér hos godkendt installatør. Pris og omfang aftales på forhånd.","how.step3.badge":"TRIN 3","how.step3.title":"Nyd resultatet","how.step3.desc":"Hent bilen skinnende ren — med dokumenteret garanti og langvarig beskyttelse.","footer.blurb":"Coatify forbinder bilejere med verificerede installatører af keramisk coating. Sammenlign, chat og forespørg — trygt og nemt.","footer.product":"Produkt","footer.resources":"Ressourcer","footer.legal":"Juridisk","footer.blog":"Blog (kommer)","footer.forInstallers":"For installatører (kommer)","footer.brands":"Mærker & kemi (kommer)","footer.terms":"Vilkår","footer.privacy":"Privatliv","footer.cookies":"Cookies","footer.rights":"Alle rettigheder forbeholdes.","modal.msgTitle":"Send besked","modal.nameLabel":"Navn","modal.emailLabel":"E-mail","modal.messageLabel":"Besked","modal.cancel":"Annuller","modal.send":"Send","info.unique":"Hvad er unikt","info.bestFor":"Passer bedst til","info.layersLabel":"Anbefalede lag","info.durationLabel":"Forventet varighed","info.notes":"Noter" },
+      en: { "skip.toContent":"Skip to content","nav.book":"Book","nav.installers":"Installers","nav.how":"How it works","nav.faq":"FAQ","cta.beInstaller":"Become an installer","lang.label":"Language","hero.title1":"Book ceramic coating","hero.title2":"fast, safe and easy","hero.desc":"Find verified installers, open profiles for gallery, packages and chat — and clearly see the coating type before you request.","hero.chip1":"Verified providers","hero.chip2":"Warranty up to 7 years","hero.chip3":"Annual recoat","book.start":"Start booking","book.desc":"Fill in some info and we’ll show relevant installers.","book.service":"Service","service.coating":"Ceramic coating","service.wrapping":"Wrapping","book.city":"City","book.time":"Preferred date","book.condition":"Car condition","cond.new":"Brand new","cond.nearly":"Nearly new","cond.older":"Older car","book.size":"Car size","size.small":"Small","size.medium":"Medium","size.large":"Large/SUV","book.find":"Find installers","filter.sort":"Sort","sort.best":"Best & fastest","sort.top":"Top rated first","sort.cheap":"Cheapest first","filter.topOnly":"Show top level only","place.all":"Showing: All places","place.clear":"Clear","card.experience":"years experience","card.seeInstaller":"View installer","card.fromPrice":"From price","card.top":"TOP LEVEL","card.mid":"MID LEVEL","profile.back":"← Back","profile.gallery":"Gallery","profile.packages":"Services & packages","pkg.time":"Processing time","pkg.recoat":"Annual recoat","pkg.request":"Request","pkg.message":"Send message","how.badge":"Simple in three steps","how.title":"How it works","how.desc":"From search to showroom shine — across the country.","how.step1.badge":"STEP 1","how.step1.title":"Find detailing","how.step1.desc":"See verified providers, compare packages and pick the right treatment.","how.step2.badge":"STEP 2","how.step2.title":"Drop off keys","how.step2.desc":"Hand over to an approved installer. Price and scope agreed upfront — no surprises.","how.step3.badge":"STEP 3","how.step3.title":"Enjoy the result","how.step3.desc":"Pick up your car gleaming — with documented warranty and durable protection.","footer.blurb":"Coatify connects car owners with verified ceramic coating installers. Compare, chat and request — safely and easily.","footer.product":"Product","footer.resources":"Resources","footer.legal":"Legal","footer.blog":"Blog (coming)","footer.forInstallers":"For installers (coming)","footer.brands":"Brands & chemistry (coming)","footer.terms":"Terms","footer.privacy":"Privacy","footer.cookies":"Cookies","footer.rights":"All rights reserved.","modal.msgTitle":"Send message","modal.nameLabel":"Name","modal.emailLabel":"Email","modal.messageLabel":"Message","modal.cancel":"Cancel","modal.send":"Send","info.unique":"What’s unique","info.bestFor":"Best for","info.layersLabel":"Recommended layers","info.durationLabel":"Expected durability","info.notes":"Notes" }
+    };
+
+    function t(key){ const dict = I18N[state.lang] || I18N.no; return dict[key] || I18N.no[key] || ''; }
+
+    function applyTranslations(lang){
+      const dict = I18N[lang] || I18N.no;
+      document.documentElement.setAttribute('lang', lang);
+      $$('[data-i18n]').forEach(el=>{
+        const key=el.getAttribute('data-i18n');
+        if(dict[key]) el.textContent = dict[key];
+      });
+      updatePlaceBadge(); // badge text
+      renderList();       // card CTAs etc.
+    }
+
+    // Language pickers — buttons + mobile select
+    $$( '[data-lang]' ).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const lang = btn.getAttribute('data-lang') || 'no';
+        state.lang = lang; save(state);
+        // Close any <details> parent popover
+        const d = btn.closest('details'); if(d) d.removeAttribute('open');
+        // Sync mobile select
+        const sel = $('#langSelectMobile'); if(sel) sel.value = lang;
+        applyTranslations(lang);
+      });
+    });
+
+    const langSelectMobile = $('#langSelectMobile');
+    if(langSelectMobile){
+      langSelectMobile.value = state.lang;
+      langSelectMobile.addEventListener('change', ()=>{
+        state.lang = langSelectMobile.value; save(state); applyTranslations(state.lang);
+      });
+    }
+
+    // NEW: Close language selectors when clicking outside
+    function setupLanguageSelectorClose() {
+      const mobileLangSelector = $('#mobileLangSelector');
+      const desktopLangSelector = $('#desktopLangSelector');
+      
+      // Close language selectors when clicking outside
+      document.addEventListener('click', (e) => {
+        if (mobileLangSelector && !mobileLangSelector.contains(e.target)) {
+          mobileLangSelector.removeAttribute('open');
+        }
+        if (desktopLangSelector && !desktopLangSelector.contains(e.target)) {
+          desktopLangSelector.removeAttribute('open');
+        }
+      });
+      
+      // Prevent closing when clicking inside the language selector
+      [mobileLangSelector, desktopLangSelector].forEach(selector => {
+        if (selector) {
+          selector.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+        }
+      });
+    }
+
+    // UPDATED: List / cards with coating-register style
+    function listCard(inst){
+      const chips = primaryCoatings(inst).map(slug=>coatingChip(slug)).join(' ');
+      const price = new Intl.NumberFormat('no-NO').format(minPrice(inst)) + ' kr';
+      
+      return `<article class="installer-card">
+        <div class="installer-card-header">
+          <div class="installer-avatar">
+            <img src="${inst.avatar || 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?q=80&w=256&auto=format&fit=crop'}" alt="Profilbilde av ${inst.name}" loading="lazy" decoding="async">
+          </div>
+          <div class="installer-info">
+            <div class="installer-name">
+              ${inst.name}
+              ${levelBadge(inst.level)}
+            </div>
+            <div class="installer-company">${inst.company}</div>
+            <div class="installer-meta">
+              <div class="rating">
+                ${'★'.repeat(Math.floor(inst.rating))}${inst.rating % 1 >= 0.5 ? '½' : ''}
+                <span>${inst.rating.toFixed(1)} (${inst.reviews})</span>
+              </div>
+              <span>${inst.years} ${t('card.experience')}</span>
+              <span>${inst.cars}+ biler</span>
+            </div>
+          </div>
+        </div>
+        
+        ${chips ? `<div class="coating-chips">${chips}</div>` : '<div class="coating-chips"><span class="text-sm text-slate-500">Coating-info oppgis i profil</span></div>'}
+        
+        <div class="installer-actions">
+          <button class="btn btn-primary" type="button" data-view-inst="${inst.id}" aria-label="Se installatør ${inst.name}">${t('card.seeInstaller')}</button>
+          <div class="price-section">
+            <div class="price-label">${t('card.fromPrice')}</div>
+            <div class="price-amount">${price}</div>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function renderList(){
+      const root = $('#installerGrid'); if(!root) return;
+      let list=[...installers];
+      if(state.city){ const c=state.city.toLowerCase(); list=list.filter(i=>(i.city||'').toLowerCase()===c); }
+      if(state.topOnly) list=list.filter(i=>i.level==='TOP');
+      const sorter = state.sort==='best'?byBest:state.sort==='top'?byTop:byCheap; list.sort(sorter);
+      const emptyHtml = `<div class="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
+        Fant ingen installatører i <strong>${state.city || 'ukjent sted'}</strong>.
+        <button class="btn btn-outline mt-2" id="showAllBtn" type="button">${t('place.clear')}</button>
+      </div>`;
+      root.innerHTML = list.length ? list.map(listCard).join('') : emptyHtml;
+      $$('#installerGrid [data-view-inst]').forEach(btn=> btn.addEventListener('click', ()=> navigateToProfile(btn.dataset.viewInst)));
+      $('#showAllBtn')?.addEventListener('click', ()=>{ state.city=''; save(state); updatePlaceBadge(); renderList(); });
+      wireInfoButtons(root);
+    }
+
+    // Profile
+    function renderProfile(id){
+      const inst=installers.find(i=>i.id===id); if(!inst) return;
+      $('#profileHeader').innerHTML =
+        `<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <div style="width:84px;height:84px" class="rounded-full overflow-hidden border-2 border-white shadow">
+              <img src="${inst.avatar || ''}" alt="Profilbilde av ${inst.name}" class="w-full h-full object-cover" loading="eager" fetchpriority="high">
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">${inst.name}</h2>
+              <p class="text-slate-600">${inst.company} • ${inst.city}</p>
+              <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
+                ${levelBadge(inst.level)}
+                <span>⭐ ${inst.rating.toFixed(1)} <span class="text-slate-400">(${inst.reviews})</span></span>
+                <span class="text-slate-400">•</span>
+                <span>${inst.years} ${t('card.experience')}</span>
+                <span class="text-slate-400">•</span>
+                <span>${inst.cars}+ biler behandlet</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="btn btn-outline" type="button" data-open-message>${t('pkg.message')}</button>
+            <a href="#installers" class="btn btn-primary" data-i18n="nav.installers">${t('nav.installers')}</a>
+          </div>
+        </div>`;
+      $('#profileGallery').innerHTML = (inst.gallery||[]).map((src,i)=>
+        `<div class="aspect-[4/3] overflow-hidden"><img src="${src}" alt="Arbeid fra ${inst.name}" loading="${i<2?'eager':'lazy'}" ${i<2?'fetchpriority="high"':''} decoding="async"></div>`
+      ).join('');
+      $('#profilePackages').innerHTML = (inst.packages||[]).map(p=>{
+        const slug=p.brand_slug || (p.brand||'').toLowerCase().replace(/\s+/g,'-');
+        const chip=coatingChip(slug,false);
+        return `<div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <h4 class="font-extrabold">${p.title}</h4>
+                <span class="chip text-[11px] px-2 py-0.5 rounded-full">${p.warranty}</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">${t('pkg.time')} ${p.time || '—'} • ${t('pkg.recoat')}: ${NOK.format(p.recoat)}</p>
+              <div class="mt-2 flex flex-wrap items-center gap-2">${chip}</div>
+            </div>
+            <div class="text-right shrink-0"><div class="text-lg font-extrabold">${NOK.format(p.price)}</div></div>
+          </div>
+          <ul class="mt-2 text-sm text-slate-700 list-disc pl-5">${p.includes.map(i=>`<li>${i}</li>`).join('')}</ul>
+          <div class="mt-3 flex items-center gap-2">
+            <button class="btn btn-primary" type="button" data-request='${JSON.stringify({instId:inst.id, pkgId:p.id})}'>${t('pkg.request')}</button>
+            <button class="btn btn-outline" type="button" data-open-message>${t('pkg.message')}</button>
+          </div>
+        </div>`;
+      }).join('');
+      $$('[data-open-message]', $('#installerProfile')).forEach(b=> b.addEventListener('click', openMessage));
+      $$('[data-request]', $('#installerProfile')).forEach(b=> b.addEventListener('click', (e)=>{
+        const payload=JSON.parse(e.currentTarget.getAttribute('data-request'));
+        alert('Forespørsel klargjort for ' + payload.instId + ' / ' + payload.pkgId + '.');
+      }));
+      wireInfoButtons($('#installerProfile'));
+    }
+
+    // Info modal buttons
+    function wireInfoButtons(scope=document){
+      $$('[data-coating-info]', scope).forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const slug=btn.getAttribute('data-coating-info'); const c=coatingsDict[slug]; if(!c) return;
+          $('#infoTitle').textContent=c.display_name || slug;
+          $('#infoChemistry').textContent=c.chemistry ? ('Kjemi: ' + c.chemistry) : '';
+          $('#infoUnique').textContent=c.unique || '';
+          $('#infoBestFor').textContent=c.best_for || '';
+          $('#infoLayers').textContent=(c.recommended_layers || 1) + ' lag';
+          $('#infoDurability').textContent=(c.durability_years ? c.durability_years + ' år' : '—');
+          $('#infoNotes').textContent=c.notes || '';
+          openInfo();
+        });
+      });
+      
+      // NEW: Vehicle condition info button
+      $$('[data-info="vehicle-condition"]', scope).forEach(btn=>{
+        btn.addEventListener('click', openVehicleConditionInfo);
+      });
+    }
+
+    // Place badge
+    function placeIcon(){ return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 21s-7-4.35-7-10a7 7 0 1 1 14 0c0 5.65-7 10-7 10Zm0-9a3 3 0 1 0 0-6 3 3 0 1 0 0 6Z" stroke-width="1.8"/></svg>`; }
+    function updatePlaceBadge(){
+      const badge=$('#currentPlace'); if(!badge) return;
+      const place=(state.city||'').trim(); const dict=I18N[state.lang] || I18N.no;
+      if(place){
+        badge.innerHTML = `${placeIcon()}<span>${dict['place.showing'] || (state.lang==='en'?'Showing:':'Viser:')} <strong>${place}</strong></span>
+          <button id="clearPlace" class="btn btn-outline" type="button" style="padding:.35rem .6rem; font-size:.85rem">${dict['place.clear']||'Fjern'}</button>`;
+        $('#clearPlace')?.addEventListener('click', ()=>{ state.city=''; save(state); updatePlaceBadge(); renderList(); });
+      } else {
+        badge.innerHTML = `${placeIcon()}<span>${dict['place.all']||'Viser: Alle steder'}</span>
+          <button id="clearPlace" class="btn btn-outline" type="button" style="padding:.35rem .6rem; font-size:.85rem" disabled>${dict['place.clear']||'Fjern'}</button>`;
+      }
+    }
+
+    // Modals
+    function openInfo(){ $('#infoModal').classList.add('open'); $('#infoModal').setAttribute('aria-hidden','false'); document.body.classList.add('modal-open'); }
+    function closeInfo(){ $('#infoModal').classList.remove('open'); $('#infoModal').setAttribute('aria-hidden','true'); document.body.classList.remove('modal-open'); }
+    $('[data-close-infomodal]')?.addEventListener('click', closeInfo);
+    addListener($('#infoModal'),'click',(e)=>{ if(e.target.id==='infoModal') closeInfo(); }, {passive:false});
+
+    function openMessage(){ $('#messageModal').classList.add('open'); $('#messageModal').setAttribute('aria-hidden','false'); document.body.classList.add('modal-open'); $('#msgName')?.focus(); }
+    function closeMessage(){ $('#messageModal').classList.remove('open'); $('#messageModal').setAttribute('aria-hidden','true'); document.body.classList.remove('modal-open'); }
+    $$('[data-close-modal]').forEach(btn=> btn.addEventListener('click', closeMessage));
+    addListener($('#messageModal'),'click',(e)=>{ if(e.target.id==='messageModal') closeMessage(); }, {passive:false});
+    
+    // NEW: Vehicle condition modal
+    function openVehicleConditionInfo(){ $('#vehicleConditionModal').classList.add('open'); $('#vehicleConditionModal').setAttribute('aria-hidden','false'); document.body.classList.add('modal-open'); }
+    function closeVehicleConditionInfo(){ $('#vehicleConditionModal').classList.remove('open'); $('#vehicleConditionModal').setAttribute('aria-hidden','true'); document.body.classList.remove('modal-open'); }
+    $$('[data-close-modal]').forEach(btn=> btn.addEventListener('click', closeVehicleConditionInfo));
+    addListener($('#vehicleConditionModal'),'click',(e)=>{ if(e.target.id==='vehicleConditionModal') closeVehicleConditionInfo(); }, {passive:false});
+    
+    window.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeMessage(); closeInfo(); closeVehicleConditionInfo(); } });
+
+    $('#messageForm')?.addEventListener('submit',(e)=>{
+      e.preventDefault(); const name=$('#msgName')?.value.trim();
+      alert((I18N[state.lang]?.thanks || (state.lang==='en'?'Thanks':'Takk')) + ', ' + (name || (state.lang==='en'?'customer':'kunde')) + '! ' + (state.lang==='en' ? 'Message sent.' : 'Meldingen er sendt.'));
+      closeMessage();
+    });
+
+    // Router
+    function navigateToList(){ $('#installerProfile').classList.add('hidden'); $('#installers').classList.remove('hidden'); renderList(); document.getElementById('installers')?.scrollIntoView({behavior:'smooth', block:'start'}); }
+    function navigateToProfile(id){ location.hash = '#installers/'+id; }
+    function applyRoute(){
+      const hash=location.hash.replace(/^#/,''); const parts=hash.split('/').filter(Boolean);
+      if(parts[0]==='installers' && parts[1]){ $('#installers').classList.add('hidden'); $('#installerProfile').classList.remove('hidden'); renderProfile(parts[1]); document.getElementById('installerProfile')?.scrollIntoView({behavior:'smooth', block:'start'}); }
+      else { navigateToList(); }
+    }
+    window.addEventListener('hashchange', applyRoute);
+
+    // ✅ FIX: back button
+    addListener($('#backToList'), 'click', () => { location.hash = '#installers'; });
+
+    // Init
+    if($('#langSelectMobile')) $('#langSelectMobile').value = state.lang;
+    applyTranslations(state.lang);
+    updatePlaceBadge();
+    applyRoute();
+    wireInfoButtons(); // Initialize info buttons on page load
+    setupLanguageSelectorClose(); // Initialize language selector close behavior
+  </script>
+</body>
+</html>

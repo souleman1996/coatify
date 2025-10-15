@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="no" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Coatify — Keramisk Coating Register</title>
+  <meta name="description" content="Utforsk alle keramiske coating-produkter i markedet. Søk, sammenlign og finn den perfekte beskyttelsen for din bil." />
+  <meta name="theme-color" content="#006666" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#003f3f" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --brand: #006666; --brand-700: #0a5a5a; --ok: #16a34a; --ink: #0f172a; --ink-600: #475569; --line: #e5e7eb;
+      --ring: 0 0 0 3px rgba(0,102,102,.25);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: #fff; color: var(--ink); -webkit-tap-highlight-color: transparent; }
+
+    .skip { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+    .skip:focus { left: 1rem; top: 1rem; width: auto; height: auto; background: #fff; color: #111827; padding: .5rem .75rem; border-radius: .5rem; box-shadow: 0 8px 24px rgba(2,6,23,.15); z-index: 50; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; font-weight: 800; border-radius: 1rem; line-height: 1; min-height: 44px; min-width: 44px; }
+    .btn:focus-visible { outline: none; box-shadow: var(--ring); }
+    .btn-primary { background: var(--brand); color: #fff; padding: .8rem 1.05rem; }
+    .btn-primary:hover { background: var(--brand-700); }
+
+    .btn-secondary { background: #f8fafc; color: var(--ink); border: 1px solid #e2e8f0; padding: .8rem 1.05rem; }
+    .btn-secondary:hover { background: #f1f5f9; }
+
+    .search-input { 
+      width: 100%; 
+      max-width: 600px; 
+      padding: 1rem 3rem 1rem 1.5rem; 
+      border-radius: 1.5rem; 
+      border: 2px solid #e5e7eb; 
+      font-size: 1.1rem; 
+      transition: all 0.3s ease; 
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .search-input:focus { 
+      outline: none; 
+      border-color: var(--brand); 
+      box-shadow: var(--ring), 0 4px 12px rgba(0,102,102,0.1); 
+    }
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .coating-card {
+      background: #fff;
+      border-radius: 1.25rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+    .coating-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-color: var(--brand);
+    }
+
+    .coating-card-header {
+      padding: 1.5rem 1.5rem 1rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    /* Increased logo size */
+    .coating-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .coating-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .coating-logo-placeholder {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 0.7rem;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 12px;
+    }
+
+    .coating-content { padding: 1rem 1.5rem 1.5rem 1.5rem; }
+    .coating-property { margin-bottom: 1rem; }
+    .property-label { font-weight: 700; color: #475569; display: block; margin-bottom: 0.25rem; }
+    .property-value { color: var(--ink); line-height: 1.5; }
+
+    .no-results { text-align: center; padding: 3rem 1rem; color: #64748b; }
+    .results-count { color: #64748b; margin-bottom: 1.5rem; text-align: center; }
+
+    .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .filter-container { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 2rem; }
+    .filter-btn { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 9999px; padding: 0.5rem 1rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease; font-weight: 700; }
+    .filter-btn:hover { background: #f1f5f9; }
+    .filter-btn.active { background: var(--brand); color: white; border-color: var(--brand); }
+
+    .badge { display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+    .badge-premium { background: rgba(255, 193, 7, 0.1); color: #b45309; }
+    .badge-norwegian { background: rgba(37, 99, 235, 0.1); color: #1d4ed8; }
+    .badge-self-healing { background: rgba(16, 185, 129, 0.1); color: #047857; }
+
+    .coating-actions { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1.5rem; }
+    .action-btn { padding: 0.65rem 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 800; text-align: center; cursor: pointer; transition: all 0.2s ease; border: 1px solid #e2e8f0; background: #fff; }
+    .action-btn:hover { background: #f8fafc; }
+    .action-btn.primary { background: var(--brand); color:#fff; border-color: var(--brand); }
+    .action-btn.primary:hover { background: var(--brand-700); }
+
+    .comparison-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; padding: 1rem; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); transform: translateY(100%); transition: transform 0.3s ease; z-index: 50; }
+    .comparison-bar.active { transform: translateY(0); }
+    .comparison-items { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .comparison-item { display: flex; align-items: center; background: #f8fafc; border-radius: 0.5rem; padding: 0.5rem; min-width: 150px; }
+    .comparison-item-remove { margin-left: 0.5rem; cursor: pointer; color: #64748b; }
+    .comparison-item-remove:hover { color: #dc2626; }
+
+    .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,102,102,0.3); border-radius: 50%; border-top-color: var(--brand); animation: spin 1s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Modal (popup) */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2,6,23,.55); display: none; align-items: center; justify-content: center; z-index: 60; }
+    .modal-backdrop.active { display: flex; }
+    .modal { width: min(880px, 92vw); max-height: 86vh; overflow: auto; background: #fff; border-radius: 1rem; box-shadow: 0 24px 60px rgba(2,6,23,.35); }
+    .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-weight: 900; }
+    .modal-body { padding: 1rem 1.25rem; }
+    .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid #e5e7eb; display: flex; gap: .5rem; justify-content: flex-end; }
+
+    /* Thicker header menu text */
+    .header-nav a { font-weight: 900 !important; letter-spacing: .01em; }
+
+    .rating { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.5rem 0; }
+    .product-title { text-align: center; margin-bottom: 0.5rem; }
+    .product-duration { text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .product-badges { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    
+    /* New styles for two-column layout */
+    .coatings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    @media (max-width: 768px) {
+      .coatings-grid { grid-template-columns: 1fr; }
+    }
+    
+    /* Modal image styles */
+    .modal-image-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-image {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .modal-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    
+    /* Load more button */
+    .load-more-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    
+    .load-more-btn {
+      background: var(--brand);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .load-more-btn:hover {
+      background: var(--brand-700);
+      transform: translateY(-2px);
+    }
+    
+    .load-more-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Search container improvements */
+    .search-container {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      pointer-events: none;
+    }
+
+    /* Language selector styles */
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <a href="#main" class="skip" data-i18n="skip.toContent">Hopp til innhold</a>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3">
+      <!-- Logo -->
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="flex items-center gap-2" aria-label="Coatify forside">
+          <img src="./Img/coatify-logo.svg" alt="Coatify" class="w-auto object-contain" style="height:48px" fetchpriority="high" decoding="async">
+        </a>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="hidden md:flex items-center gap-6 text-sm header-nav" aria-label="Hovedmeny">
+        <a href="index.html" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.home">Hjem</a>
+        <a href="index.html#installers" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.installers">Installatører</a>
+        <a href="index.html#how" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.how">Slik fungerer det</a>
+        <a href="index.html#faq" class="hover:text-slate-900 min-h-[44px] inline-flex items-center" data-i18n="nav.faq">FAQ</a>
+        <a href="coating-register.html" class="hover:text-slate-900 min-h-[44px] inline-flex items-center text-emerald-700" data-i18n="nav.register">Coating Register</a>
+      </nav>
+
+      <!-- Right side: Language selector and mobile menu -->
+      <div class="flex items-center gap-4">
+        <!-- Language (desktop) -->
+        <details class="relative hidden md:block" id="desktopLangSelector">
+          <summary class="list-none p-2 rounded-full border border-slate-200 min-h-[44px] min-w-[44px] grid place-items-center hover:bg-slate-50 cursor-pointer" aria-label="Bytt språk" role="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke-width="2"></circle>
+              <path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+          </summary>
+          <ul class="absolute right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-xl py-2 z-50">
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="no">Norsk</button></li>
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="sv">Svenska</button></li>
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="da">Dansk</button></li>
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="en">English</button></li>
+          </ul>
+        </details>
+
+        <!-- Language (mobile) -->
+        <details class="relative md:hidden" id="mobileLangSelector">
+          <summary class="list-none p-2 rounded-full border border-slate-200 min-h-[44px] min-w-[44px] grid place-items-center" aria-label="Bytt språk" role="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke-width="2"></circle>
+              <path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+          </summary>
+          <ul class="absolute right-0 mt-2 w-44 bg-white border border-slate-200 shadow-lg rounded-xl py-2 z-50">
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="no">Norsk</button></li>
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="sv">Svenska</button></li>
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="da">Dansk</button></li>
+            <li><button class="w-full text-left px-4 py-2 hover:bg-slate-50" data-lang="en">English</button></li>
+          </ul>
+        </details>
+
+        <!-- Mobile menu button -->
+        <button id="menuBtn" class="md:hidden p-2 rounded-lg border border-slate-200 min-h-[44px] min-w-[44px]" aria-controls="mobileNav" aria-expanded="false" aria-label="Åpne meny">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke-width="2" stroke-linecap="round" /></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav -->
+    <div id="mobileNav" class="md:hidden hidden border-t border-slate-200" role="region" aria-label="Mobilmeny">
+      <nav class="px-4 py-3 grid gap-1.5 text-slate-700 header-nav">
+        <a href="index.html" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.home">Hjem</a>
+        <a href="index.html#installers" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.installers">Installatører</a>
+        <a href="index.html#how" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.how">Slik fungerer det</a>
+        <a href="index.html#faq" class="p-3 rounded-xl hover:bg-slate-100" data-i18n="nav.faq">FAQ</a>
+        <a href="coating-register.html" class="p-3 rounded-xl hover:bg-slate-100 text-emerald-700" data-i18n="nav.register">Coating Register</a>
+        <div class="pt-2">
+          <label class="sr-only" for="langSelectMobile">Språk</label>
+          <select id="langSelectMobile" class="w-full p-2 border border-slate-300 rounded-lg">
+            <option value="no">Norsk</option>
+            <option value="sv">Svenska</option>
+            <option value="da">Dansk</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero Section -->
+    <section class="bg-[linear-gradient(180deg,#ffffff,rgba(0,102,102,.06))] py-12 md:py-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-4" data-i18n="hero.title">
+          Keramisk <span style="color:#006666">Coating Register</span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-8" data-i18n="hero.subtitle">
+          Utforsk alle keramiske coating-produkter i markedet. Søk, sammenlign og finn den perfekte beskyttelsen for din bil.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Søk etter coating-produkter..."
+            autocomplete="off"
+          />
+          <div class="search-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="py-6">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="filter-container">
+          <button class="filter-btn active" data-filter="all" data-i18n="filter.all">Alle produkter</button>
+          <button class="filter-btn" data-filter="premium" data-i18n="filter.premium">Premium</button>
+          <button class="filter-btn" data-filter="norwegian" data-i18n="filter.norwegian">Norske merker</button>
+          <button class="filter-btn" data-filter="self-healing" data-i18n="filter.selfHealing">Selvreparerende</button>
+          <button class="filter-btn" data-filter="long-warranty" data-i18n="filter.longWarranty">Lang garanti</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="py-8 md:py-12">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div id="resultsCount" class="results-count"></div>
+
+        <div id="coatingsGrid" class="coatings-grid">
+          <!-- Coating cards will be inserted here by JavaScript -->
+        </div>
+
+        <div id="noResults" class="no-results hidden">
+          <svg class="mx-auto h-12 w-12 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="text-lg font-semibold text-slate-700 mb-2" data-i18n="no.results.title">Ingen produkter funnet</h3>
+          <p class="text-slate-500" data-i18n="no.results.desc">Prøv et annet søkeord eller sjekk om du har stavet riktig.</p>
+        </div>
+
+        <!-- Load More Button -->
+        <div id="loadMoreContainer" class="load-more-container hidden">
+          <button id="loadMoreBtn" class="load-more-btn" data-i18n="load.more">Last flere produkter</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Comparison Bar -->
+  <div id="comparisonBar" class="comparison-bar">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex-1">
+          <h3 class="font-semibold text-slate-900 mb-2" data-i18n="comparison.title">Produkter valgt for sammenligning</h3>
+          <div class="comparison-items">
+            <div id="comparisonItems"></div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button id="clearComparison" class="btn-secondary" data-i18n="comparison.clear">Fjern alle</button>
+          <button id="compareBtn" class="btn-primary" data-i18n="comparison.compare">Sammenlign (0)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic Modal (Benefits & AI Insights) -->
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal" role="document">
+      <div class="modal-header">
+        <h3 id="modalTitle" class="modal-title text-xl"></h3>
+        <button id="modalClose" class="p-2 rounded-lg hover:bg-slate-100" aria-label="Lukk popup">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="modalBody" class="modal-body">
+        <!-- Dynamic content -->
+      </div>
+      <div class="modal-footer">
+        <button id="modalCancel" class="btn-secondary" data-i18n="modal.close">Lukk</button>
+        <a id="modalPrimaryLink" href="#" target="_blank" rel="noopener" class="btn-primary hidden" data-i18n="modal.visit">Besøk nettside</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 mt-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid gap-8 md:grid-cols-4">
+        <div class="space-y-3">
+          <a href="index.html" class="inline-flex items-center gap-2" aria-label="Coatify forside">
+            <img src="./img/coatify-logo.svg" alt="Coatify" class="w-auto object-contain" style="height:64px" loading="lazy" decoding="async">
+          </a>
+          <p class="text-sm leading-6 text-slate-600">
+            Coatify kobler bileiere med verifiserte installatører av keramisk coating.
+            Sammenlign, chat og forespør – trygt og enkelt.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-extrabold tracking-wide text-slate-900">Produkt</h4>
+          <ul class="mt-3 space-y-2 text-sm text-slate-600">
+            <li><a href="index.html#installers" class="hover:text-slate-900">Finn installatør</a></li>
+            <li><a href="index.html#how" class="hover:text-slate-900">Slik fungerer det</a></li>
+            <li><a href="index.html#faq" class="hover:text-slate-900">FAQ</a></li>
+            <li><a href="coating-register.html" class="hover:text-slate-900">Coating Register</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-extrabold tracking-wide text-slate-900">Ressurser</h4>
+          <ul class="mt-3 space-y-2 text-sm text-slate-600">
+            <li><a href="#" class="hover:text-slate-900">Blogg (kommer)</a></li>
+            <li><a href="#" class="hover:text-slate-900">For installatører (kommer)</a></li>
+            <li><a href="#" class="hover:text-slate-900">Merker &amp; kjemi (kommer)</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-extrabold tracking-wide text-slate-900">Juridisk</h4>
+          <ul class="mt-3 space-y-2 text-sm text-slate-600">
+            <li><a href="#" class="hover:text-slate-900">Vilkår</a></li>
+            <li><a href="#" class="hover:text-slate-900">Personvern</a></li>
+            <li><a href="#" class="hover:text-slate-900">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
+        <p>© <span id="year"></span> Coatify. Alle rettigheter forbeholdt.</p>
+        <nav class="flex items-center gap-6 header-nav" aria-label="Bunnmeny">
+          <a href="index.html#how" class="min-h-[44px] inline-flex items-center hover:text-slate-900">Slik fungerer det</a>
+          <a href="index.html#installers" class="min-h-[44px] inline-flex items-center hover:text-slate-900">Finn installatør</a>
+          <a href="index.html#faq" class="min-h-[44px] inline-flex items-center hover:text-slate-900">FAQ</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Enhanced coating data with image URLs and translatable content
+    const coatingsData = [
+      { 
+        id: 1, 
+        name: "Ceramic Pro 9H", 
+        duration: { no: "5+ år", sv: "5+ år", da: "5+ år", en: "5+ years" }, 
+        properties: { 
+          no: "Riper, salt, sol, kjemikalier, skitt. Holder farge og glans.", 
+          sv: "Repor, salt, sol, kemikalier, smuts. Bevarar färg och glans.", 
+          da: "Ridser, salt, sol, kemikalier, snavs. Bevarer farve og glans.", 
+          en: "Scratches, salt, sun, chemicals, dirt. Maintains color and gloss." 
+        }, 
+        warranty: { 
+          no: "Livstid på Pro+, årlig kontroll", 
+          sv: "Livstid på Pro+, årlig kontroll", 
+          da: "Levetid på Pro+, årlig kontrol", 
+          en: "Lifetime on Pro+, annual inspection" 
+        }, 
+        target: { 
+          no: "Lang holdbarhet med offisiell garanti, hverdags- og firmabiler", 
+          sv: "Lång hållbarhet med officiell garanti, vardags- och företagsbilar", 
+          da: "Lang holdbarhed med officiel garanti, hverdags- og firmabiler", 
+          en: "Long durability with official warranty, daily use and company cars" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/ceramic-pro-glass.webp", 
+        tags: ["premium","long-warranty"], 
+        rating: 4.8, 
+        url: "https://www.ceramicpro.com/" 
+      },
+      { 
+        id: 2, 
+        name: "Gyeon Q² Mohs", 
+        duration: { no: "3–5 år", sv: "3–5 år", da: "3–5 år", en: "3–5 years" }, 
+        properties: { 
+          no: "Riper, UV, kjemikalier, vann, smuss. Hydrofob effekt.", 
+          sv: "Repor, UV, kemikalier, vatten, smuts. Hydrofob effekt.", 
+          da: "Ridser, UV, kemikalier, vand, snavs. Hydrofob effekt.", 
+          en: "Scratches, UV, chemicals, water, dirt. Hydrophobic effect." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig kontroll", 
+          sv: "5 år, årlig kontroll", 
+          da: "5 år, årlig kontrol", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Balanse mellom pris og kvalitet, biler som vaskes ofte", 
+          sv: "Balans mellan pris och kvalitet, bilar som tvättas ofta", 
+          da: "Balance mellem pris og kvalitet, biler som vaskes ofte", 
+          en: "Balance between price and quality, cars that are washed frequently" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Gyeon.png", 
+        tags: ["premium"], 
+        rating: 4.6, 
+        url: "https://gyeonquartz.com/" 
+      },
+      { 
+        id: 3, 
+        name: "System X Max G+", 
+        duration: { no: "Livstid", sv: "Livstid", da: "Levetid", en: "Lifetime" }, 
+        properties: { 
+          no: "Riper, kjemikalier, UV. Svært motstandsdyktig.", 
+          sv: "Repor, kemikalier, UV. Mycket motståndskraftig.", 
+          da: "Ridser, kemikalier, UV. Meget modstandsdygtig.", 
+          en: "Scratches, chemicals, UV. Highly resistant." 
+        }, 
+        warranty: { 
+          no: "Livstid, årlig inspeksjon", 
+          sv: "Livstid, årlig inspektion", 
+          da: "Levetid, årlig inspektion", 
+          en: "Lifetime, annual inspection" 
+        }, 
+        target: { 
+          no: "Langsiktige bileiere som vil ha bilen ny i mange år", 
+          sv: "Långsiktiga bilägare som vill ha bilen ny i många år", 
+          da: "Langtidsejere som ønsker bilen ny i mange år", 
+          en: "Long-term car owners who want the car to look new for many years" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/MaxG-Web.webp", 
+        tags: ["premium","long-warranty"], 
+        rating: 4.7, 
+        url: "https://www.element119.com/" 
+      },
+      { 
+        id: 4, 
+        name: "IGL Kenzo", 
+        duration: { no: "Opptil 5 år", sv: "Upp till 5 år", da: "Op til 5 år", en: "Up to 5 years" }, 
+        properties: { 
+          no: "Riper, smuss, UV, kjemikalier. Dyp glans. Miljøvennlig.", 
+          sv: "Repor, smuts, UV, kemikalier. Djup glans. Miljövänlig.", 
+          da: "Ridser, snavs, UV, kemikalier. Dyb glans. Miljøvenlig.", 
+          en: "Scratches, dirt, UV, chemicals. Deep gloss. Eco-friendly." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig kontroll", 
+          sv: "5 år, årlig kontroll", 
+          da: "5 år, årlig kontrol", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Miljøvennlig premium-løsning med høy glans", 
+          sv: "Miljövänlig premium-lösning med hög glans", 
+          da: "Miljøvenlig premium-løsning med høj glans", 
+          en: "Eco-friendly premium solution with high gloss" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Kenzo.webp", 
+        tags: ["premium"], 
+        rating: 4.5, 
+        url: "https://iglcoatings.com/" 
+      },
+      { 
+        id: 5, 
+        name: "Modesta", 
+        duration: { no: "5 år", sv: "5 år", da: "5 år", en: "5 years" }, 
+        properties: { 
+          no: "Ekstrem ripe- og kjemikaliebeskyttelse. Dyp, varig glans.", 
+          sv: "Extrem rep- och kemikalieskydd. Djup, varaktig glans.", 
+          da: "Ekstrem ridse- og kemikaliebeskyttelse. Dyb, varig glans.", 
+          en: "Extreme scratch and chemical protection. Deep, lasting gloss." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig inspeksjon", 
+          sv: "5 år, årlig inspektion", 
+          da: "5 år, årlig inspektion", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Sportsbil- og luksusbil-eiere, high-end glans", 
+          sv: "Sportbil- och lyxbilägare, high-end glans", 
+          da: "Sportsvogns- og luksusbilejere, high-end glans", 
+          en: "Sports car and luxury car owners, high-end gloss" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/modesta-bc-08.webp", 
+        tags: ["premium"], 
+        rating: 4.9, 
+        url: "https://www.modesta.co/" 
+      },
+      { 
+        id: 6, 
+        name: "Kamikaze Collection", 
+        duration: { no: "3–5 år", sv: "3–5 år", da: "3–5 år", en: "3–5 years" }, 
+        properties: { 
+          no: "Riper, smuss, UV. Speilblank finish.", 
+          sv: "Repor, smuts, UV. Spegelblank finish.", 
+          da: "Ridser, snavs, UV. Spejlblank finish.", 
+          en: "Scratches, dirt, UV. Mirror-like finish." 
+        }, 
+        warranty: { 
+          no: "3–5 år, årlig kontroll", 
+          sv: "3–5 år, årlig kontroll", 
+          da: "3–5 år, årlig kontrol", 
+          en: "3–5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Bilentusiaster, showroom-finish, biltreff", 
+          sv: "Bilentusiaster, showroom-finish, bilträffar", 
+          da: "Bilentusiaster, showroom-finish, biltreffer", 
+          en: "Car enthusiasts, showroom finish, car meets" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/kamikaze.png", 
+        tags: ["premium"], 
+        rating: 4.7, 
+        url: "https://www.kamikaze-collection.com/" 
+      },
+      { 
+        id: 7, 
+        name: "Nanolex Si3D", 
+        duration: { no: "2–4 år", sv: "2–4 år", da: "2–4 år", en: "2–4 years" }, 
+        properties: { 
+          no: "Riper, kjemikalier, UV. Enkel å holde ren.", 
+          sv: "Repor, kemikalier, UV. Lätt att hålla ren.", 
+          da: "Ridser, kemikalier, UV. Nem at holde ren.", 
+          en: "Scratches, chemicals, UV. Easy to keep clean." 
+        }, 
+        warranty: { 
+          no: "3 år, årlig oppfølging", 
+          sv: "3 år, årlig uppföljning", 
+          da: "3 år, årlig opfølgning", 
+          en: "3 years, annual follow-up" 
+        }, 
+        target: { 
+          no: "Solid beskyttelse til god pris, dagligbil-eiere", 
+          sv: "Solid skydd till bra pris, vardagsbilägare", 
+          da: "Solid beskyttelse til god pris, dagligbilejere", 
+          en: "Solid protection at a good price, daily car owners" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/nanolex.jpg", 
+        tags: [], 
+        rating: 4.3, 
+        url: "https://www.nanolex.de/" 
+      },
+      { 
+        id: 8, 
+        name: "22PLE", 
+        duration: { no: "Opptil 3 år", sv: "Upp till 3 år", da: "Op til 3 år", en: "Up to 3 years" }, 
+        properties: { 
+          no: "Riper, UV, skitt. Dyp 'wet look'.", 
+          sv: "Repor, UV, smuts. Djup 'wet look'.", 
+          da: "Ridser, UV, snavs. Dyb 'wet look'.", 
+          en: "Scratches, UV, dirt. Deep 'wet look'." 
+        }, 
+        warranty: { 
+          no: "3 år, årlig kontroll", 
+          sv: "3 år, årlig kontroll", 
+          da: "3 år, årlig kontrol", 
+          en: "3 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Enkel og blank beskyttelse, kort bindingstid", 
+          sv: "Enkel och blank skydd, kort bindningstid", 
+          da: "Enkel og blank beskyttelse, kort bindingstid", 
+          en: "Simple and glossy protection, short curing time" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/22ple.webp", 
+        tags: [], 
+        rating: 4.2, 
+        url: "https://22ple.com/" 
+      },
+      { 
+        id: 9, 
+        name: "Feynlab Self-Heal", 
+        duration: { no: "7 år", sv: "7 år", da: "7 år", en: "7 years" }, 
+        properties: { 
+          no: "Selvreparerer små riper, UV, kjemikalier.", 
+          sv: "Självreparerar små repor, UV, kemikalier.", 
+          da: "Selvheler små ridser, UV, kemikalier.", 
+          en: "Self-heals small scratches, UV, chemicals." 
+        }, 
+        warranty: { 
+          no: "7 år, årlig kontroll", 
+          sv: "7 år, årlig kontroll", 
+          da: "7 år, årlig kontrol", 
+          en: "7 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Bybiler, mye uteparkering, små riper uunngåelige", 
+          sv: "Stadsbilar, mycket utomhusparkering, små repor oundvikliga", 
+          da: "Bybiler, meget udendørsparkering, små ridser uundgåelige", 
+          en: "City cars, lots of outdoor parking, small scratches unavoidable" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Feynlabselfhealing.png", 
+        tags: ["self-healing","long-warranty"], 
+        rating: 4.6, 
+        url: "https://www.feynlab.com/" 
+      },
+      { 
+        id: 10, 
+        name: "Fireball Coatings", 
+        duration: { no: "2–5 år", sv: "2–5 år", da: "2–5 år", en: "2–5 years" }, 
+        properties: { 
+          no: "Ripebestandig, vannavvisende, høy glans.", 
+          sv: "Repbeständig, vattenavvisande, hög glans.", 
+          da: "Ridsebestandig, vandafvisende, høj glans.", 
+          en: "Scratch-resistant, water-repellent, high gloss." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig inspeksjon", 
+          sv: "5 år, årlig inspektion", 
+          da: "5 år, årlig inspektion", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Høy glans, enkel vask, ofte sorte biler", 
+          sv: "Hög glans, enkel tvätt, ofta svarta bilar", 
+          da: "Høj glans, nem vask, ofte sorte biler", 
+          en: "High gloss, easy wash, often black cars" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/fireball_norge_ceramic_coating.png", 
+        tags: [], 
+        rating: 4.4, 
+        url: "https://www.fireballkorea.com/" 
+      },
+      { 
+        id: 11, 
+        name: "XPEL Fusion Plus", 
+        duration: { no: "4 år", sv: "4 år", da: "4 år", en: "4 years" }, 
+        properties: { 
+          no: "Riper, kan kombineres med PPF.", 
+          sv: "Repor, kan kombineras med PPF.", 
+          da: "Ridser, kan kombineres med PPF.", 
+          en: "Scratches, can be combined with PPF." 
+        }, 
+        warranty: { 
+          no: "4 år, årlig kontroll", 
+          sv: "4 år, årlig kontroll", 
+          da: "4 år, årlig kontrol", 
+          en: "4 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Nye bilkjøpere med PPF", 
+          sv: "Nya bilköpare med PPF", 
+          da: "Nye bilkøbere med PPF", 
+          en: "New car buyers with PPF" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/xpel_fusoinpluss.png", 
+        tags: [], 
+        rating: 4.3, 
+        url: "https://www.xpel.com/" 
+      },
+      { 
+        id: 12, 
+        name: "Opti-Coat Pro", 
+        duration: { no: "Langvarig", sv: "Långvarig", da: "Langvarig", en: "Long-lasting" }, 
+        properties: { 
+          no: "Riper, kjemikalier. Blank og lett å vaske.", 
+          sv: "Repor, kemikalier. Blank och lätt att tvätta.", 
+          da: "Ridser, kemikalier. Blank og nem at vaske.", 
+          en: "Scratches, chemicals. Glossy and easy to wash." 
+        }, 
+        warranty: { 
+          no: "Livstid på Pro+, årlig kontroll", 
+          sv: "Livstid på Pro+, årlig kontroll", 
+          da: "Levetid på Pro+, årlig kontrol", 
+          en: "Lifetime on Pro+, annual inspection" 
+        }, 
+        target: { 
+          no: "Firmabiler og taxier, slitestyrke viktig", 
+          sv: "Företagsbilar och taxibilar, slitstyrka viktigt", 
+          da: "Firmabiler og taxaer, slidstyrke vigtigt", 
+          en: "Company cars and taxis, wear resistance important" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/OPTI-Coat-1.webp", 
+        tags: ["long-warranty"], 
+        rating: 4.5, 
+        url: "https://opti-coat.net/" 
+      },
+      { 
+        id: 13, 
+        name: "Adam's Graphene Ceramic", 
+        duration: { no: "Opptil 5 år", sv: "Upp till 5 år", da: "Op til 5 år", en: "Up to 5 years" }, 
+        properties: { 
+          no: "Riper, UV, smuss. Glatt finish. Grafén-teknologi.", 
+          sv: "Repor, UV, smuts. Slät finish. Grafen-teknologi.", 
+          da: "Ridser, UV, snavs. Glat finish. Grafen-teknologi.", 
+          en: "Scratches, UV, dirt. Smooth finish. Graphene technology." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig inspeksjon", 
+          sv: "5 år, årlig inspektion", 
+          da: "5 år, årlig inspektion", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Ny teknologi (grafén) med keramisk beskyttelse", 
+          sv: "Ny teknologi (grafen) med keramisk skydd", 
+          da: "Ny teknologi (grafen) med keramisk beskyttelse", 
+          en: "New technology (graphene) with ceramic protection" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/adams_graphene_coating.webp", 
+        tags: [], 
+        rating: 4.4, 
+        url: "https://adamspolishes.com/" 
+      },
+      { 
+        id: 14, 
+        name: "Autotriz", 
+        duration: { no: "5 år", sv: "5 år", da: "5 år", en: "5 years" }, 
+        properties: { 
+          no: "Riper, salt, kjemikalier, vær. Sterk glans.", 
+          sv: "Repor, salt, kemikalier, väder. Stark glans.", 
+          da: "Ridser, salt, kemikalier, vejr. Stærk glans.", 
+          en: "Scratches, salt, chemicals, weather. Strong gloss." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig kontroll", 
+          sv: "5 år, årlig kontroll", 
+          da: "5 år, årlig kontrol", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Balansert løsning med glans og slitestyrke", 
+          sv: "Balanserad lösning med glans och slitstyrka", 
+          da: "Balanceret løsning med glans og slidstyrke", 
+          en: "Balanced solution with gloss and wear resistance" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/3dmatrixpro.png", 
+        tags: [], 
+        rating: 4.3, 
+        url: "https://autotriz.com/" 
+      },
+      { 
+        id: 15, 
+        name: "SB3 Coatings", 
+        duration: { no: "2–7 år", sv: "2–7 år", da: "2–7 år", en: "2–7 years" }, 
+        properties: { 
+          no: "Riper, UV, kjemikalier.", 
+          sv: "Repor, UV, kemikalier.", 
+          da: "Ridser, UV, kemikalier.", 
+          en: "Scratches, UV, chemicals." 
+        }, 
+        warranty: { 
+          no: "Opptil 7 år, årlig oppfølging", 
+          sv: "Upp till 7 år, årlig uppföljning", 
+          da: "Op til 7 år, årlig opfølgning", 
+          en: "Up to 7 years, annual follow-up" 
+        }, 
+        target: { 
+          no: "Fleksibilitet i pris og varighet, profesjonelle detailere", 
+          sv: "Flexibilitet i pris och varaktighet, professionella detaljister", 
+          da: "Fleksibilitet i pris og varighed, professionelle detailers", 
+          en: "Flexibility in price and duration, professional detailers" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Untitled_design_58.webp", 
+        tags: ["long-warranty"], 
+        rating: 4.4, 
+        url: "https://www.sb3coating.com/" 
+      },
+      { 
+        id: 16, 
+        name: "Revivify", 
+        duration: { no: "5 år", sv: "5 år", da: "5 år", en: "5 years" }, 
+        properties: { 
+          no: "Selvreparerer små riper, UV, kjemikalier.", 
+          sv: "Självreparerar små repor, UV, kemikalier.", 
+          da: "Selvheler små ridser, UV, kemikalier.", 
+          en: "Self-heals small scratches, UV, chemicals." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig kontroll", 
+          sv: "5 år, årlig kontroll", 
+          da: "5 år, årlig kontrol", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Parkering ute, ønsker alltid pen lakk", 
+          sv: "Parkering ute, vill alltid ha fin lack", 
+          da: "Parkering ude, ønsker altid pæn lak", 
+          en: "Outdoor parking, always want nice paint" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Revivify-Mobile-Pro.png", 
+        tags: ["self-healing"], 
+        rating: 4.5, 
+        url: "https://revivifycoatings.com/" 
+      },
+      { 
+        id: 17, 
+        name: "Arctic Coating (Norge)", 
+        duration: { no: "5 år", sv: "5 år", da: "5 år", en: "5 years" }, 
+        properties: { 
+          no: "Riper, salt, snø, regn, UV. Nordisk klima.", 
+          sv: "Repor, salt, snö, regn, UV. Nordiskt klimat.", 
+          da: "Ridser, salt, sne, regn, UV. Nordisk klima.", 
+          en: "Scratches, salt, snow, rain, UV. Nordic climate." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig kontroll", 
+          sv: "5 år, årlig kontroll", 
+          da: "5 år, årlig kontrol", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Norske bileiere som vil ha lokal løsning", 
+          sv: "Norska bilägare som vill ha lokal lösning", 
+          da: "Norske bilejere som ønsker lokal løsning", 
+          en: "Norwegian car owners who want a local solution" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Arctic_coating.png", 
+        tags: ["norwegian"], 
+        rating: 4.6, 
+        url: "https://www.arcticcoating.no/" 
+      },
+      { 
+        id: 18, 
+        name: "Drop Off (Norge)", 
+        duration: { no: "Opptil 5 år", sv: "Upp till 5 år", da: "Op til 5 år", en: "Up to 5 years" }, 
+        properties: { 
+          no: "Riper, salt, smuss, UV. Enkel å holde ren.", 
+          sv: "Repor, salt, smuts, UV. Lätt att hålla ren.", 
+          da: "Ridser, salt, snavs, UV. Nem at holde ren.", 
+          en: "Scratches, salt, dirt, UV. Easy to keep clean." 
+        }, 
+        warranty: { 
+          no: "5 år, årlig kontroll", 
+          sv: "5 år, årlig kontroll", 
+          da: "5 år, årlig kontrol", 
+          en: "5 years, annual inspection" 
+        }, 
+        target: { 
+          no: "Trygg, velkjent løsning med landsdekkende garanti", 
+          sv: "Trygg, välkänd lösning med rikstäckande garanti", 
+          da: "Tryg, velkendt løsning med landsdækkende garanti", 
+          en: "Safe, well-known solution with nationwide warranty" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Drop-Off-Lotus-trnsp_6c0c164bd2b597ee32b68b8b5755bd2e.jpg", 
+        tags: ["norwegian"], 
+        rating: 4.7, 
+        url: "https://dropoff.no/" 
+      },
+      { 
+        id: 19, 
+        name: "Ditec Ceramic Ultra", 
+        duration: { no: "Opptil 9 år", sv: "Upp till 9 år", da: "Op til 9 år", en: "Up to 9 years" }, 
+        properties: { 
+          no: "Riper, UV, salt, skitt. Dyp glans. Enkel vask.", 
+          sv: "Repor, UV, salt, smuts. Djup glans. Lätt att tvätta.", 
+          da: "Ridser, UV, salt, snavs. Dyb glans. Nem vask.", 
+          en: "Scratches, UV, salt, dirt. Deep gloss. Easy wash." 
+        }, 
+        warranty: { 
+          no: "9 år, årlig kontroll hos Ditec", 
+          sv: "9 år, årlig kontroll hos Ditec", 
+          da: "9 år, årlig kontrol hos Ditec", 
+          en: "9 years, annual inspection at Ditec" 
+        }, 
+        target: { 
+          no: "Nye bilkjøpere og leasing, sterk og landsdekkende garanti", 
+          sv: "Nya bilköpare och leasing, stark och rikstäckande garanti", 
+          da: "Nye bilkøbere og leasing, stærk og landsdækkende garanti", 
+          en: "New car buyers and leasing, strong and nationwide warranty" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/Ditec_ceramicultra_step1_and_step2.jpg", 
+        tags: ["long-warranty"], 
+        rating: 4.5, 
+        url: "https://www.ditec.no/" 
+      },
+      { 
+        id: 20, 
+        name: "Evershine Graphene WÜrth", 
+        duration: { no: "5 år", sv: "5 år", da: "5 år", en: "5 years" }, 
+        properties: { 
+          no: "Riper, UV, salt, skitt. Dyp glans. Enkel vask.", 
+          sv: "Repor, UV, salt, smuts. Djup glans. Lätt att tvätta.", 
+          da: "Ridser, UV, salt, snavs. Dyb glans. Nem vask.", 
+          en: "Scratches, UV, salt, dirt. Deep gloss. Easy wash." 
+        }, 
+        warranty: { 
+          no: "5 år", 
+          sv: "5 år", 
+          da: "5 år", 
+          en: "5 years" 
+        }, 
+        target: { 
+          no: "Generell premium-beskyttelse", 
+          sv: "Generell premium-skydd", 
+          da: "Generel premium-beskyttelse", 
+          en: "General premium protection" 
+        }, 
+        imageUrl: "./keramic%20coating%20bottle/evershine_wurth.png", 
+        tags: [], 
+        rating: 4.3, 
+        url: "https://www.evershine.no/" 
+      }
+    ];
+
+    // Language translation data
+    const I18N = {
+      no: {
+        "skip.toContent": "Hopp til innhold",
+        "nav.home": "Hjem",
+        "nav.installers": "Installatører", 
+        "nav.how": "Slik fungerer det",
+        "nav.faq": "FAQ",
+        "nav.register": "Coating Register",
+        "hero.title": "Keramisk Coating Register",
+        "hero.subtitle": "Utforsk alle keramiske coating-produkter i markedet. Søk, sammenlign og finn den perfekte beskyttelsen for din bil.",
+        "search.placeholder": "Søk etter coating-produkter...",
+        "filter.all": "Alle produkter",
+        "filter.premium": "Premium", 
+        "filter.norwegian": "Norske merker",
+        "filter.selfHealing": "Selvreparerende",
+        "filter.longWarranty": "Lang garanti",
+        "results.count": "produkter vises",
+        "no.results.title": "Ingen produkter funnet",
+        "no.results.desc": "Prøv et annet søkeord eller sjekk om du har stavet riktig.",
+        "load.more": "Last flere produkter",
+        "comparison.title": "Produkter valgt for sammenligning",
+        "comparison.clear": "Fjern alle",
+        "comparison.compare": "Sammenlign",
+        "card.visit": "Besøk nettside",
+        "card.benefits": "Les mer om fordeler",
+        "card.compare": "Sammenlign",
+        "card.inComparison": "I sammenligning",
+        "modal.close": "Lukk",
+        "modal.visit": "Besøk nettside",
+        "property.features": "Egenskaper:",
+        "property.warranty": "Garanti:",
+        "property.target": "Målgruppe:"
+      },
+      sv: {
+        "skip.toContent": "Hoppa till innehåll",
+        "nav.home": "Hem",
+        "nav.installers": "Installatörer",
+        "nav.how": "Så fungerar det", 
+        "nav.faq": "FAQ",
+        "nav.register": "Coating Register",
+        "hero.title": "Keramisk Coating Register",
+        "hero.subtitle": "Utforska alla keramiska coating-produkter på marknaden. Sök, jämför och hitta det perfekta skyddet för din bil.",
+        "search.placeholder": "Sök efter coating-produkter...",
+        "filter.all": "Alla produkter",
+        "filter.premium": "Premium",
+        "filter.norwegian": "Norska märken", 
+        "filter.selfHealing": "Självläkande",
+        "filter.longWarranty": "Lång garanti",
+        "results.count": "produkter visas",
+        "no.results.title": "Inga produkter hittades",
+        "no.results.desc": "Prova ett annat sökord eller kontrollera om du har stavat rätt.",
+        "load.more": "Ladda fler produkter",
+        "comparison.title": "Produkter valda för jämförelse",
+        "comparison.clear": "Ta bort alla", 
+        "comparison.compare": "Jämför",
+        "card.visit": "Besök webbplats",
+        "card.benefits": "Läs mer om fördelar",
+        "card.compare": "Jämför",
+        "card.inComparison": "I jämförelse",
+        "modal.close": "Stäng",
+        "modal.visit": "Besök webbplats",
+        "property.features": "Egenskaper:",
+        "property.warranty": "Garanti:",
+        "property.target": "Målgruppe:"
+      },
+      da: {
+        "skip.toContent": "Hop til indhold",
+        "nav.home": "Hjem",
+        "nav.installers": "Installatører",
+        "nav.how": "Sådan fungerer det",
+        "nav.faq": "FAQ", 
+        "nav.register": "Coating Register",
+        "hero.title": "Keramisk Coating Register",
+        "hero.subtitle": "Udforsk alle keramiske coating-produkter på markedet. Søg, sammenlign og find den perfekte beskyttelse til din bil.",
+        "search.placeholder": "Søg efter coating-produkter...",
+        "filter.all": "Alle produkter",
+        "filter.premium": "Premium",
+        "filter.norwegian": "Norske mærker",
+        "filter.selfHealing": "Selvhelende",
+        "filter.longWarranty": "Lang garanti", 
+        "results.count": "produkter vises",
+        "no.results.title": "Ingen produkter fundet",
+        "no.results.desc": "Prøv et andet søgeord eller tjek om du har stavet korrekt.",
+        "load.more": "Indlæs flere produkter",
+        "comparison.title": "Produkter valgt til sammenligning",
+        "comparison.clear": "Fjern alle",
+        "comparison.compare": "Sammenlign",
+        "card.visit": "Besøg hjemmeside",
+        "card.benefits": "Læs mere om fordele",
+        "card.compare": "Sammenlign", 
+        "card.inComparison": "I sammenligning",
+        "modal.close": "Luk",
+        "modal.visit": "Besøg hjemmeside",
+        "property.features": "Egenskaber:",
+        "property.warranty": "Garanti:",
+        "property.target": "Målgruppe:"
+      },
+      en: {
+        "skip.toContent": "Skip to content",
+        "nav.home": "Home",
+        "nav.installers": "Installers", 
+        "nav.how": "How it works",
+        "nav.faq": "FAQ",
+        "nav.register": "Coating Register",
+        "hero.title": "Ceramic Coating Register",
+        "hero.subtitle": "Explore all ceramic coating products on the market. Search, compare and find the perfect protection for your car.",
+        "search.placeholder": "Search for coating products...",
+        "filter.all": "All products",
+        "filter.premium": "Premium",
+        "filter.norwegian": "Norwegian brands",
+        "filter.selfHealing": "Self-healing", 
+        "filter.longWarranty": "Long warranty",
+        "results.count": "products showing",
+        "no.results.title": "No products found",
+        "no.results.desc": "Try a different search term or check your spelling.",
+        "load.more": "Load more products",
+        "comparison.title": "Products selected for comparison",
+        "comparison.clear": "Clear all",
+        "comparison.compare": "Compare",
+        "card.visit": "Visit website",
+        "card.benefits": "Read more about benefits",
+        "card.compare": "Compare",
+        "card.inComparison": "In comparison", 
+        "modal.close": "Close",
+        "modal.visit": "Visit website",
+        "property.features": "Features:",
+        "property.warranty": "Warranty:",
+        "property.target": "Target audience:"
+      }
+    };
+
+    // Language state management
+    const LANGUAGE_KEY = 'coatify_language';
+    let currentLang = localStorage.getItem(LANGUAGE_KEY) || 'no';
+
+    // DOM elements
+    const searchInput = document.getElementById('searchInput');
+    const coatingsGrid = document.getElementById('coatingsGrid');
+    const noResults = document.getElementById('noResults');
+    const resultsCount = document.getElementById('resultsCount');
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const comparisonBar = document.getElementById('comparisonBar');
+    const comparisonItems = document.getElementById('comparisonItems');
+    const clearComparisonBtn = document.getElementById('clearComparison');
+    const compareBtn = document.getElementById('compareBtn');
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+    // Modal elements
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalPrimaryLink = document.getElementById('modalPrimaryLink');
+
+    // State
+    let currentFilter = 'all';
+    let searchTerm = '';
+    let comparisonList = [];
+    let favorites = JSON.parse(localStorage.getItem('coatifyFavorites')) || [];
+    let currentPage = 1;
+    const productsPerPage = 8;
+
+    // Apply translations
+    function applyTranslations(lang) {
+      const dict = I18N[lang] || I18N.no;
+      document.documentElement.setAttribute('lang', lang);
+      
+      // Update all elements with data-i18n attribute
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+      
+      // Update search placeholder
+      if (searchInput && dict['search.placeholder']) {
+        searchInput.placeholder = dict['search.placeholder'];
+      }
+      
+      // Update filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const filter = btn.dataset.filter;
+        const key = `filter.${filter === 'all' ? 'all' : filter === 'premium' ? 'premium' : filter === 'norwegian' ? 'norwegian' : filter === 'self-healing' ? 'selfHealing' : 'longWarranty'}`;
+        if (dict[key]) {
+          btn.textContent = dict[key];
+        }
+      });
+      
+      // Re-render coatings to update card text
+      if (window.filteredCoatings) {
+        renderCoatings(window.filteredCoatings);
+      }
+      
+      // Update comparison bar
+      updateComparisonUI();
+    }
+
+    // Language selector functionality
+    function setupLanguageSelectors() {
+      // Desktop language selector
+      const desktopLangSelector = document.getElementById('desktopLangSelector');
+      const mobileLangSelector = document.getElementById('mobileLangSelector');
+      const langSelectMobile = document.getElementById('langSelectMobile');
+      
+      // Close language selectors when clicking outside
+      document.addEventListener('click', (e) => {
+        if (desktopLangSelector && !desktopLangSelector.contains(e.target)) {
+          desktopLangSelector.removeAttribute('open');
+        }
+        if (mobileLangSelector && !mobileLangSelector.contains(e.target)) {
+          mobileLangSelector.removeAttribute('open');
+        }
+      });
+      
+      // Language button handlers
+      document.querySelectorAll('[data-lang]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          currentLang = lang;
+          localStorage.setItem(LANGUAGE_KEY, lang);
+          applyTranslations(lang);
+          
+          // Close dropdowns
+          if (desktopLangSelector) desktopLangSelector.removeAttribute('open');
+          if (mobileLangSelector) mobileLangSelector.removeAttribute('open');
+        });
+      });
+      
+      // Mobile select handler
+      if (langSelectMobile) {
+        langSelectMobile.value = currentLang;
+        langSelectMobile.addEventListener('change', (e) => {
+          currentLang = e.target.value;
+          localStorage.setItem(LANGUAGE_KEY, currentLang);
+          applyTranslations(currentLang);
+        });
+      }
+    }
+
+    // Mobile menu toggle
+    menuBtn?.addEventListener('click', () => {
+      const open = !mobileNav.classList.toggle('hidden');
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+    document.querySelectorAll('#mobileNav a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileNav.classList.add('hidden');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Filter buttons
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        currentPage = 1; // Reset to first page when filter changes
+        filterCoatings();
+      });
+    });
+
+    // Render coating cards with images
+    function renderCoatings(coatings, append = false) {
+      if (!append) {
+        coatingsGrid.innerHTML = '';
+      }
+
+      if (coatings.length === 0 && !append) {
+        noResults.classList.remove('hidden');
+        const dict = I18N[currentLang] || I18N.no;
+        resultsCount.textContent = dict['no.results.title'] || 'Ingen produkter funnet';
+        loadMoreContainer.classList.add('hidden');
+        return;
+      }
+      
+      noResults.classList.add('hidden');
+      
+      const startIndex = (currentPage - 1) * productsPerPage;
+      const endIndex = startIndex + productsPerPage;
+      const productsToShow = coatings.slice(0, endIndex);
+      
+      const dict = I18N[currentLang] || I18N.no;
+      resultsCount.textContent = `${productsToShow.length} av ${coatings.length} ${dict['results.count'] || 'produkter vises'}`;
+
+      // Only render new products when loading more
+      const productsToRender = append ? 
+        coatings.slice(startIndex, endIndex) : 
+        productsToShow;
+
+      productsToRender.forEach(coating => {
+        const isInComparison = comparisonList.includes(coating.id);
+        const coatingData = getCoatingDataForLanguage(coating, currentLang);
+
+        const card = document.createElement('div');
+        card.className = 'coating-card fade-in';
+        card.innerHTML = `
+          <div class="coating-card-header">
+            <div class="coating-logo">
+              <img src="${coating.imageUrl}" alt="${coating.name} logo" 
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="coating-logo-placeholder" style="display: none;">${coating.name.split(' ')[0]}</div>
+            </div>
+            <div class="product-title">
+              <h3 class="text-xl font-extrabold text-slate-900">${coating.name}</h3>
+            </div>
+            <div class="product-badges">
+              ${coating.tags.includes('premium') ? '<span class="badge badge-premium">' + (dict['filter.premium'] || 'Premium') + '</span>' : ''}
+              ${coating.tags.includes('norwegian') ? '<span class="badge badge-norwegian">' + (dict['filter.norwegian'] || 'Norsk') + '</span>' : ''}
+              ${coating.tags.includes('self-healing') ? '<span class="badge badge-self-healing">' + (dict['filter.selfHealing'] || 'Selvreparerende') + '</span>' : ''}
+            </div>
+            <div class="product-duration">${coatingData.duration}</div>
+            <div class="rating">
+              <div class="flex text-amber-400">
+                ${'★'.repeat(Math.floor(coating.rating))}${coating.rating % 1 >= 0.5 ? '½' : ''}
+              </div>
+              <span class="text-sm text-slate-500">${coating.rating}</span>
+            </div>
+          </div>
+          <div class="coating-content">
+            <div class="coating-property">
+              <span class="property-label">${dict['property.features'] || 'Egenskaper:'}</span>
+              <span class="property-value">${coatingData.properties}</span>
+            </div>
+            <div class="coating-property">
+              <span class="property-label">${dict['property.warranty'] || 'Garanti:'}</span>
+              <span class="property-value">${coatingData.warranty}</span>
+            </div>
+            <div class="coating-property">
+              <span class="property-label">${dict['property.target'] || 'Målgruppe:'}</span>
+              <span class="property-value">${coatingData.target}</span>
+            </div>
+
+            <div class="coating-actions">
+              <a class="action-btn primary visit-btn" href="${coating.url || '#'}" target="_blank" rel="noopener" data-id="${coating.id}">${dict['card.visit'] || 'Besøk nettside'}</a>
+              <button class="action-btn benefits-btn" data-id="${coating.id}">${dict['card.benefits'] || 'Les mer om fordeler'}</button>
+              <button class="action-btn compare-btn ${isInComparison ? 'primary' : ''}" data-id="${coating.id}">
+                ${isInComparison ? (dict['card.inComparison'] || 'I sammenligning') : (dict['card.compare'] || 'Sammenlign')}
+              </button>
+            </div>
+          </div>
+        `;
+
+        // Add listeners
+        card.querySelector('.benefits-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openBenefitsModal(coating);
+        });
+
+        card.querySelector('.compare-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleComparison(coating.id);
+        });
+
+        coatingsGrid.appendChild(card);
+      });
+
+      // Show/hide load more button
+      if (endIndex < coatings.length) {
+        loadMoreContainer.classList.remove('hidden');
+        loadMoreBtn.textContent = dict['load.more'] || 'Last flere produkter';
+      } else {
+        loadMoreContainer.classList.add('hidden');
+      }
+    }
+
+    // Get coating data for current language
+    function getCoatingDataForLanguage(coating, lang) {
+      return {
+        duration: coating.duration[lang] || coating.duration.no,
+        properties: coating.properties[lang] || coating.properties.no,
+        warranty: coating.warranty[lang] || coating.warranty.no,
+        target: coating.target[lang] || coating.target.no
+      };
+    }
+
+    // Filter coatings based on search & tags
+    function filterCoatings() {
+      let filtered = coatingsData;
+
+      if (searchTerm !== '') {
+        const q = searchTerm;
+        filtered = filtered.filter(c =>
+          c.name.toLowerCase().includes(q) ||
+          c.properties.no.toLowerCase().includes(q) ||
+          c.target.no.toLowerCase().includes(q)
+        );
+      }
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(c => c.tags.includes(currentFilter));
+      }
+      
+      // Store filtered results for pagination
+      window.filteredCoatings = filtered;
+      renderCoatings(filtered);
+    }
+
+    // Load more products
+    loadMoreBtn.addEventListener('click', () => {
+      currentPage++;
+      renderCoatings(window.filteredCoatings, true);
+    });
+
+    // Comparison list
+    function toggleComparison(id) {
+      const i = comparisonList.indexOf(id);
+      if (i > -1) {
+        comparisonList.splice(i, 1);
+      } else {
+        if (comparisonList.length >= 3) { 
+          const dict = I18N[currentLang] || I18N.no;
+          alert(dict['comparison.max'] || 'Du kan maksimalt sammenligne 3 produkter samtidig.'); 
+          return; 
+        }
+        comparisonList.push(id);
+      }
+      updateComparisonUI();
+      filterCoatings();
+    }
+
+    function updateComparisonUI() {
+      if (comparisonList.length > 0) comparisonBar.classList.add('active');
+      else comparisonBar.classList.remove('active');
+
+      comparisonItems.innerHTML = '';
+      comparisonList.forEach(id => {
+        const c = coatingsData.find(x => x.id === id);
+        if (!c) return;
+        const item = document.createElement('div');
+        item.className = 'comparison-item';
+        item.innerHTML = `
+          <span class="text-sm font-semibold">${c.name}</span>
+          <button class="comparison-item-remove" data-id="${c.id}" aria-label="Fjern ${c.name} fra sammenligning">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        `;
+        item.querySelector('.comparison-item-remove').addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleComparison(c.id);
+        });
+        comparisonItems.appendChild(item);
+      });
+      
+      const dict = I18N[currentLang] || I18N.no;
+      compareBtn.textContent = `${dict['comparison.compare'] || 'Sammenlign'} (${comparisonList.length})`;
+    }
+
+    clearComparisonBtn.addEventListener('click', () => {
+      comparisonList = [];
+      updateComparisonUI();
+      filterCoatings();
+    });
+
+    // Compare button -> AI popup with table + insights
+    compareBtn.addEventListener('click', () => {
+      if (comparisonList.length < 2) {
+        const dict = I18N[currentLang] || I18N.no;
+        alert(dict['comparison.min'] || 'Velg minst 2 produkter å sammenligne.'); 
+        return;
+      }
+      const items = comparisonList.map(id => coatingsData.find(c => c.id === id)).filter(Boolean);
+      openCompareModal(items);
+    });
+
+    // Benefits modal
+    function openBenefitsModal(coating) {
+      const dict = I18N[currentLang] || I18N.no;
+      const coatingData = getCoatingDataForLanguage(coating, currentLang);
+      
+      modalTitle.textContent = `${coating.name} — ${dict['card.benefits'] || 'fordeler'}`;
+      modalPrimaryLink.classList.remove('hidden');
+      modalPrimaryLink.href = coating.url || '#';
+      modalPrimaryLink.textContent = dict['modal.visit'] || 'Besøk nettside';
+      modalCancel.textContent = dict['modal.close'] || 'Lukk';
+
+      const bullets = [
+        `<strong>${dict['property.features'] || 'Egenskaper:'}</strong> ${coatingData.properties}`,
+        `<strong>${dict['property.warranty'] || 'Garanti:'}</strong> ${coatingData.warranty}`,
+        `<strong>${dict['property.target'] || 'Målgruppe:'}</strong> ${coatingData.target}`,
+        `<strong>Holdbarhet:</strong> ${coatingData.duration}`,
+        `<strong>Vurdering:</strong> ${coating.rating} / 5`
+      ];
+
+      modalBody.innerHTML = `
+        <div class="modal-image-container">
+          <div class="modal-image">
+            <img src="${coating.imageUrl}" alt="${coating.name} produktbilde" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="modal-image-placeholder" style="display: none;">${coating.name}</div>
+          </div>
+        </div>
+        <div class="prose prose-slate max-w-none">
+          <p>${getModalDescription(coating, currentLang)}</p>
+          <ul class="mt-3 grid gap-2">
+            ${bullets.map(b => `<li>${b}</li>`).join('')}
+          </ul>
+          <p class="mt-3 text-sm text-slate-600">${getModalTip(currentLang)}</p>
+        </div>
+      `;
+      openModal();
+    }
+
+    // Get modal description based on language
+    function getModalDescription(coating, lang) {
+      const descriptions = {
+        no: "Dette er en lakkforsegling som beskytter mot vær, UV og kjemikalier, og gjør bilen enklere å vaske med varig glans.",
+        sv: "Detta är en lackförsegling som skyddar mot väder, UV och kemikalier, och gör bilen lättare att tvätta med varaktig glans.",
+        da: "Dette er en lakforsegling, der beskytter mod vejr, UV og kemikalier, og gør bilen nemmere at vaske med varig glans.",
+        en: "This is a paint sealant that protects against weather, UV and chemicals, and makes the car easier to wash with lasting gloss."
+      };
+      return descriptions[lang] || descriptions.no;
+    }
+
+    // Get modal tip based on language
+    function getModalTip(lang) {
+      const tips = {
+        no: "Tips: For maksimal effekt, vurder lakkrens og polering før påføring, og planlegg årlig kontroll for å opprettholde garanti.",
+        sv: "Tips: För maximal effekt, överväg lackrengöring och polering före applicering, och planera årlig kontroll för att upprätthålla garanti.",
+        da: "Tip: For maksimal effekt, overvej lakrens og polering før påføring, og planlæg årlig kontrol for at opretholde garanti.",
+        en: "Tip: For maximum effect, consider paint cleaning and polishing before application, and plan annual inspection to maintain warranty."
+      };
+      return tips[lang] || tips.no;
+    }
+
+    // Compare modal with AI insight
+    function openCompareModal(items) {
+      const dict = I18N[currentLang] || I18N.no;
+      modalTitle.textContent = dict['comparison.compare'] || 'Sammenligning';
+      modalPrimaryLink.classList.add('hidden');
+      modalCancel.textContent = dict['modal.close'] || 'Lukk';
+
+      const headers = ['Produkt', 'Holdbarhet', 'Garanti', 'Egenskaper', 'Målgruppe', 'Rating'];
+      const rows = items.map(i => {
+        const coatingData = getCoatingDataForLanguage(i, currentLang);
+        return `
+          <tr class="border-b">
+            <td class="font-bold">${i.name}</td>
+            <td>${coatingData.duration}</td>
+            <td>${coatingData.warranty}</td>
+            <td>${coatingData.properties}</td>
+            <td>${coatingData.target}</td>
+            <td>${i.rating}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const aiInsight = generateAIInsight(items);
+
+      modalBody.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left border-b font-extrabold">
+                ${headers.map(h => `<th class="py-2 pr-4">${h}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <h4 class="font-extrabold mb-1">AI-innsikt</h4>
+          <p class="text-slate-700">${aiInsight}</p>
+        </div>
+      `;
+      openModal();
+    }
+
+    // Simple local "AI" logic for concise differences
+    function generateAIInsight(items) {
+      const names = items.map(i => i.name.toLowerCase());
+
+      // Specific example requested: Drop Off vs Gyeon
+      const isDropOff = names.some(n => n.includes('drop off'));
+      const isGyeon = names.some(n => n.includes('gyeon'));
+      if (isDropOff && isGyeon) {
+        const drop = items.find(i => i.name.toLowerCase().includes('drop off'));
+        const gyeon = items.find(i => i.name.toLowerCase().includes('gyeon'));
+        const dropData = getCoatingDataForLanguage(drop, currentLang);
+        const gyeonData = getCoatingDataForLanguage(gyeon, currentLang);
+        
+        const insights = {
+          no: `Kort forklart: Drop Off er et norsk merke med landsdekkende garanti og enkel vedlikeholdsvask, typisk valgt for trygghet og kjapp avrenning i norsk klima (${dropData.duration}, ${dropData.warranty}). Gyeon Q² Mohs er et internasjonalt premiumvalg med meget god hardhet og hydrofobi, ofte valgt av entusiaster for kombinasjon av glans og slitestyrke (${gyeonData.duration}, ${gyeonData.warranty}). Velg Drop Off for «plug-and-play» og lokal tilgjengelighet; velg Gyeon for topp ytelse per krone og entusiast-økosystem.`,
+          sv: `Kort förklarat: Drop Off är ett norskt märke med rikstäckande garanti och enkel underhållstvätt, typiskt valt för trygghet och snabb avrinning i norskt klimat (${dropData.duration}, ${dropData.warranty}). Gyeon Q² Mohs är ett internationellt premiumval med mycket god hårdhet och hydrofobi, ofta valt av entusiaster för kombination av glans och slitstyrka (${gyeonData.duration}, ${gyeonData.warranty}). Välj Drop Off för «plug-and-play» och lokal tillgänglighet; välj Gyeon för topp prestanda per krona och entusiast-ekosystem.`,
+          da: `Kort forklaret: Drop Off er et norsk mærke med landsdækkende garanti og nem vedligeholdelsesvask, typisk valgt for tryghed og hurtig afdrypning i norsk klima (${dropData.duration}, ${dropData.warranty}). Gyeon Q² Mohs er et internationalt premiumvalg med meget god hårdhed og hydrofobi, ofte valgt af entusiaster for kombination af glans og slidstyrke (${gyeonData.duration}, ${gyeonData.warranty}). Vælg Drop Off for «plug-and-play» og lokal tilgængelighed; vælg Gyeon for top ydeevne per krone og entusiast-økosystem.`,
+          en: `Briefly explained: Drop Off is a Norwegian brand with nationwide warranty and easy maintenance washing, typically chosen for safety and quick runoff in Norwegian climate (${dropData.duration}, ${dropData.warranty}). Gyeon Q² Mohs is an international premium choice with very good hardness and hydrophobicity, often chosen by enthusiasts for the combination of gloss and wear resistance (${gyeonData.duration}, ${gyeonData.warranty}). Choose Drop Off for "plug-and-play" and local availability; choose Gyeon for top performance per krone and enthusiast ecosystem.`
+        };
+        return insights[currentLang] || insights.no;
+      }
+
+      // Otherwise: infer from tags, rating, duration
+      const bestRating = items.reduce((a,b) => a.rating > b.rating ? a : b);
+      const longest = items.reduce((a,b) => (textToYears(a.duration.no) >= textToYears(b.duration.no) ? a : b));
+      const selfHeal = items.filter(i => i.tags.includes('self-healing'));
+      const norwegian = items.filter(i => i.tags.includes('norwegian'));
+
+      const insights = {
+        no: [
+          `Beste totalrating i utvalget: ${bestRating.name} (${bestRating.rating}/5).`,
+          `Lengst oppgitt holdbarhet: ${longest.name} (${longest.duration.no}).`,
+          selfHeal.length ? `Selvreparerende alternativ: ${selfHeal.map(i=>i.name).join(', ')}.` : '',
+          norwegian.length ? `Norsk merke: ${norwegian.map(i=>i.name).join(', ')}.` : '',
+          `Tenk på garanti-vilkår (årlig kontroll) og hvor lett bilen skal være å holde ren i hverdagen.`
+        ].filter(Boolean).join(' '),
+        sv: [
+          `Bästa totalbetyg i urvalet: ${bestRating.name} (${bestRating.rating}/5).`,
+          `Längst angiven hållbarhet: ${longest.name} (${longest.duration.sv}).`,
+          selfHeal.length ? `Självläkande alternativ: ${selfHeal.map(i=>i.name).join(', ')}.` : '',
+          norwegian.length ? `Norskt märke: ${norwegian.map(i=>i.name).join(', ')}.` : '',
+          `Tänk på garanti-villkor (årlig kontroll) och hur lätt bilen ska vara att hålla ren i vardagen.`
+        ].filter(Boolean).join(' '),
+        da: [
+          `Bedste samlede vurdering i udvalget: ${bestRating.name} (${bestRating.rating}/5).`,
+          `Længst oplyst holdbarhed: ${longest.name} (${longest.duration.da}).`,
+          selfHeal.length ? `Selvhelende alternativ: ${selfHeal.map(i=>i.name).join(', ')}.` : '',
+          norwegian.length ? `Norsk mærke: ${norwegian.map(i=>i.name).join(', ')}.` : '',
+          `Tænk på garanti-vilkår (årlig kontrol) og hvor nem bilen skal være at holde ren i hverdagen.`
+        ].filter(Boolean).join(' '),
+        en: [
+          `Best overall rating in the selection: ${bestRating.name} (${bestRating.rating}/5).`,
+          `Longest stated durability: ${longest.name} (${longest.duration.en}).`,
+          selfHeal.length ? `Self-healing option: ${selfHeal.map(i=>i.name).join(', ')}.` : '',
+          norwegian.length ? `Norwegian brand: ${norwegian.map(i=>i.name).join(', ')}.` : '',
+          `Consider warranty terms (annual inspection) and how easy the car should be to keep clean in everyday life.`
+        ].filter(Boolean).join(' ')
+      };
+      
+      return insights[currentLang] || insights.no;
+    }
+
+    function textToYears(text) {
+      // Heuristic: parse "5+ år", "3–5 år", "Livstid", "Langvarig"
+      const t = (text || '').toLowerCase();
+      if (t.includes('livstid') || t.includes('levetid') || t.includes('lifetime')) return 15;
+      if (t.includes('langvarig') || t.includes('long-lasting')) return 7;
+      const m = t.match(/(\d+)\s*[–-]\s*(\d+)/);
+      if (m) return (Number(m[1]) + Number(m[2])) / 2;
+      const s = t.match(/(\d+)/);
+      if (s) return Number(s[1]);
+      return 5;
+    }
+
+    // Modal helpers
+    function openModal() { modalBackdrop.classList.add('active'); trapFocus(modalBackdrop); }
+    function closeModal() { modalBackdrop.classList.remove('active'); releaseFocus(); }
+    modalClose.addEventListener('click', closeModal);
+    modalCancel.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // Focus trap (a11y)
+    let lastFocused;
+    function trapFocus(container) {
+      lastFocused = document.activeElement;
+      const focusables = container.querySelectorAll('a,button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
+      const first = focusables[0], last = focusables[focusables.length - 1];
+      first && first.focus();
+      function handleTab(e) {
+        if (e.key !== 'Tab') return;
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      container.addEventListener('keydown', handleTab);
+      container._trap = handleTab;
+    }
+    function releaseFocus() {
+      modalBackdrop.removeEventListener('keydown', modalBackdrop._trap || (()=>{}));
+      if (lastFocused) lastFocused.focus();
+    }
+
+    // Initialize
+    function init() {
+      // Apply initial translations
+      applyTranslations(currentLang);
+      setupLanguageSelectors();
+      
+      window.filteredCoatings = coatingsData;
+      renderCoatings(coatingsData);
+      searchInput.addEventListener('input', () => {
+        searchTerm = searchInput.value.toLowerCase().trim();
+        currentPage = 1; // Reset to first page when search changes
+        filterCoatings();
+      });
+      window.addEventListener('load', () => { searchInput.focus(); });
+    }
+    init();
+  </script>
+</body>
+</html>
